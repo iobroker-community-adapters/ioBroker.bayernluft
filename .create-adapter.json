@@ -1,0 +1,46 @@
+{
+	"cli": true,
+	"target": "directory",
+	"adapterName": "bayernluefter",
+	"title": "Bayern Lüfter",
+	"description": "Connects BayernLüfter Data into IoBroker",
+	"keywords": [
+		"Bayern",
+		"Lüfter",
+		"Bayern Lüfter",
+		"luefter"
+	],
+	"expert": "yes",
+	"features": [
+		"adapter"
+	],
+	"adminFeatures": [],
+	"type": "climate-control",
+	"startMode": "daemon",
+	"connectionType": "local",
+	"dataSource": "poll",
+	"connectionIndicator": "yes",
+	"language": "JavaScript",
+	"nodeVersion": "16",
+	"adminUi": "json",
+	"tools": [
+		"ESLint",
+		"type checking",
+		"devcontainer"
+	],
+	"releaseScript": "yes",
+	"devServer": "yes",
+	"devServerPort": 8081,
+	"indentation": "Tab",
+	"quotes": "double",
+	"es6class": "yes",
+	"authorName": "Marco15453",
+	"authorGithub": "Marco15453",
+	"authorEmail": "support@marco15453.xyz",
+	"gitRemoteProtocol": "HTTPS",
+	"gitCommit": "yes",
+	"defaultBranch": "main",
+	"license": "MIT License",
+	"dependabot": "yes",
+	"creatorVersion": "2.3.0"
+}
