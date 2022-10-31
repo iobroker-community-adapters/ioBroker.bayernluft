@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluefter",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "news": {
+      "1.1.0": {
+        "en": "Added Update Interval",
+        "de": "Update Interval",
+        "ru": "Добавлено обновление Interval",
+        "pt": "Adicionado intervalo de atualização",
+        "nl": "Vertaling:",
+        "fr": "Ajout d ' une mise à jour",
+        "it": "Aggiornamento di aggiornamento",
+        "es": "Intervalo de actualización agregado",
+        "pl": "Added Update Intervald (ang.)",
+        "uk": "Додано оновлення Interval",
+        "zh-cn": "补充最新间隔"
+      },
       "1.0.2": {
         "en": "Fixed Node-Fetch Import",
         "de": "Feste Node-Fetch Import",
