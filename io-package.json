@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluefter",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "news": {
+      "1.0.2": {
+        "en": "Fixed Node-Fetch Import",
+        "de": "Feste Node-Fetch Import",
+        "ru": "Фиксированный импорт Node-Fetch",
+        "pt": "Importação de nó fixo",
+        "nl": "_",
+        "fr": "Node-Fetch Import fixe",
+        "it": "Importazione nodo fisso",
+        "es": "Importación de nodos fijos",
+        "pl": "Oficjalna strona Node-Fetch Import",
+        "uk": "Виправлено Node-Fetch Імпорт",
+        "zh-cn": "Fixde-Fetch进口"
+      },
       "1.0.1": {
         "en": "Initial Release (Test Release)",
         "de": "Erste Veröffentlichung (Test Release)",
