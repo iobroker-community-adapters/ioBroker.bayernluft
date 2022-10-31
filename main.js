@@ -54,7 +54,8 @@ class Bayernluefter extends utils.Adapter {
 	 */
 	onUnload(callback) {
 		try {
-
+			this.setState("info.connection", false, true);
+			this.pullInterval && clearInterval(this.pullInterval);
 			callback();
 		} catch (e) {
 			callback();

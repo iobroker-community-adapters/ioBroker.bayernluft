@@ -19,6 +19,9 @@ Connects BayernLüfter Data into IoBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Hotfix Clearing Interval
+
 ### 1.1.0 (2022-10-31)
 * Added Update Interval
 
