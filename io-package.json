@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluefter",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "news": {
+      "1.0.1": {
+        "en": "Initial Release (Test Release)",
+        "de": "Erste Veröffentlichung (Test Release)",
+        "ru": "Первоначальный релиз (Test Release)",
+        "pt": "Lançamento inicial (Test Release)",
+        "nl": "Initiaal Release (Test Release)",
+        "fr": "Version initiale (Communiqué de test)",
+        "it": "Release iniziale (Test Release)",
+        "es": "Lanzamiento inicial",
+        "pl": "Initial Release (ang.)",
+        "uk": "Початковий реліз (Test Release)",
+        "zh-cn": "初始释放(试验释放)"
+      },
       "1.0.0": {
         "en": "initial release",
         "de": "erstausstrahlung",
