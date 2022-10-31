@@ -2,15 +2,27 @@
 	"i18n": true,
 	"type": "panel",
 	"items": {
-		"option1": {
-			"type": "checkbox",
-			"label": "option1",
-			"newLine": true
-		},
-		"option2": {
-			"type": "text",
-			"label": "option2",
-			"newLine": true
+		"devices": {
+			"type": "table",
+			"noDelete": false,
+			"items": [{
+				"type": "text",
+				"width": "33%",
+				"attr": "ip",
+				"title": "Device IP Address"
+			},
+			{
+				"type": "text",
+				"width": "33%",
+				"attr": "port",
+				"title": "Device Port"
+			},
+			{
+				"type": "text",
+				"width": "33%",
+				"attr": "name",
+				"title": "Device Name"
+			}]
 		}
 	}
 }

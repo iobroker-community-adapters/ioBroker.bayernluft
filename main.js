@@ -1,16 +1,14 @@
+// @ts-nocheck
 "use strict";
 
 /*
  * Created with @iobroker/create-adapter v2.3.0
  */
 
-// The adapter-core module gives you access to the core ioBroker functions
-// you need to create an adapter
 const utils = require("@iobroker/adapter-core");
+const NodeFetch = require("node-fetch");
 
-// Load your modules here, e.g.:
-// const fs = require("fs");
-
+// @ts-ignore
 class Bayernluefter extends utils.Adapter {
 
 	/**
@@ -23,8 +21,6 @@ class Bayernluefter extends utils.Adapter {
 		});
 		this.on("ready", this.onReady.bind(this));
 		this.on("stateChange", this.onStateChange.bind(this));
-		// this.on("objectChange", this.onObjectChange.bind(this));
-		// this.on("message", this.onMessage.bind(this));
 		this.on("unload", this.onUnload.bind(this));
 	}
 
@@ -37,55 +33,66 @@ class Bayernluefter extends utils.Adapter {
 		// Reset the connection indicator during startup
 		this.setState("info.connection", false, true);
 
-		// The adapters config (in the instance object everything under the attribute "native") is accessible via
-		// this.config:
-		this.log.info("config option1: " + this.config.option1);
-		this.log.info("config option2: " + this.config.option2);
+		if (this.config.devices == null) {
+			this.log.error("No devices has been set, disabling adapter!");
+			this.disable();
+			return;
+		}
 
-		/*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
-		await this.setObjectNotExistsAsync("testVariable", {
-			type: "state",
-			common: {
-				name: "testVariable",
-				type: "boolean",
-				role: "indicator",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
 
-		// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-		this.subscribeStates("testVariable");
-		// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-		// this.subscribeStates("lights.*");
-		// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-		// this.subscribeStates("*");
+		for await(const device of this.GetDevices() || []) {
+			const exporttxt = await this.GetHttpRequest("http://" + device.ip + ":" + device.port + "/export.txt", device.name);
+			const deviceInfo = await this.GetHttpRequest("http://" + device.ip + ":" + device.port + "/?export=0", device.name);
 
-		/*
-			setState examples
-			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
-		// the variable testVariable is set to true as command (ack=false)
-		await this.setStateAsync("testVariable", true);
+			if(exporttxt == null || deviceInfo == null) continue;
 
-		// same thing, but the value is flagged "ack"
-		// ack should be always set to true if the value is received from or acknowledged from the target system
-		await this.setStateAsync("testVariable", { val: true, ack: true });
+			// Create Data Objects
+			await this.setObjectNotExistsAsyncEasy(device.name + ".data.date", "state", exporttxt.data.date.replaceAll("~~", ""), deviceInfo.data.date, "string", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".data.time", "state", exporttxt.data.time.replaceAll("~~", ""), deviceInfo.data.time, "string", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".data.name", "state", exporttxt.data.name.replaceAll("~~", ""), deviceInfo.data.name, "string", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".data.mac", "state", exporttxt.data.mac.replaceAll("~~", ""), deviceInfo.data.mac, "string", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".data.localip", "state", exporttxt.data.local_IP.replaceAll("~~", ""), deviceInfo.data.local_IP, "string", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".data.rssi", "state", exporttxt.data.rssi.replaceAll("~~", ""), deviceInfo.data.rssi, "string", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".data.fw_maincontroller", "state", exporttxt.data.fw_MainController.replaceAll("~~", ""), deviceInfo.data.fw_MainController, "string", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".data.fw_wifi", "state", exporttxt.data.fw_WiFi.replaceAll("~~", ""), deviceInfo.data.fw_WiFi, "string", "indicator", true, false);
 
-		// same thing, but the state is deleted after 30s (getState will return null afterwards)
-		await this.setStateAsync("testVariable", { val: true, ack: true, expire: 30 });
+			// Create Parameter Objects
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.temperature_in", "state", exporttxt.parameter.temperature_In.replaceAll("~~", ""), deviceInfo.parameter.temperature_In, "number", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.temperature_out", "state", exporttxt.parameter.temperature_Out.replaceAll("~~", ""), deviceInfo.parameter.temperature_Out, "number", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.temperature_fresh", "state", exporttxt.parameter.temperature_Fresh.replaceAll("~~", ""), deviceInfo.parameter.temperature_Fresh, "number", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.rel_humidity_in", "state", exporttxt.parameter.rel_Humidity_In.replaceAll("~~", ""), deviceInfo.parameter.rel_Humidity_In, "number", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.rel_humidity_out", "state", exporttxt.parameter.rel_Humidity_Out.replaceAll("~~", ""), deviceInfo.parameter.rel_Humidity_Out, "number", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.abs_humidity_in", "state", exporttxt.parameter.abs_Humidity_In.replaceAll("~~", ""), deviceInfo.parameter.abs_Humidity_In, "number", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.abs_humidity_out", "state", exporttxt.parameter.abs_Humidity_Out.replaceAll("~~", ""), deviceInfo.parameter.abs_Humidity_Out, "number", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.efficiency", "state", exporttxt.parameter.efficiency.replaceAll("~~", ""), deviceInfo.parameter.efficiency, "number", "indicator", true, false);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".parameter.humidity_transport", "state", exporttxt.parameter.humidity_Transport.replaceAll("~~", ""), deviceInfo.parameter.humidity_Transport, "number", "indicator", true, false);
 
-		// examples for the checkPassword/checkGroup functions
-		let result = await this.checkPasswordAsync("admin", "iobroker");
-		this.log.info("check user admin pw iobroker: " + result);
+			// Create States Objects
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.speed_in", "state", exporttxt.states.speed_In.replaceAll("~~", ""), parseInt(deviceInfo.states.speed_In), "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.speed_out", "state", exporttxt.states.speed_Out.replaceAll("~~", ""), parseInt(deviceInfo.states.speed_Out), "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.antifreeze", "state", exporttxt.states.antiFreeze.replaceAll("~~", ""), parseInt(deviceInfo.states.antiFreeze), "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.systemon", "state", exporttxt.states.SystemOn.replaceAll("~~", ""), deviceInfo.states.SystemOn, "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.Antifreeze", "state", exporttxt.states.AntiFreeze.replaceAll("~~", ""), deviceInfo.states.AntiFreeze, "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.fixed_speed", "state", exporttxt.states.Fixed_Speed.replaceAll("~~", ""), deviceInfo.states.Fixed_Speed, "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.defrosting", "state", exporttxt.states.Defrosting.replaceAll("~~", ""), deviceInfo.states.Defrosting, "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.landlord_mode", "state", exporttxt.states.Landlord_Mode.replaceAll("~~", ""), deviceInfo.states.Landlord_Mode, "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.cross_ventilation", "state", exporttxt.states.Cross_Ventilation.replaceAll("~~", ""), deviceInfo.states.Cross_Ventilation, "number", "indicator", true, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".states.timer_active", "state", exporttxt.states.Timer_active.replaceAll("~~", ""), deviceInfo.states.Timer_active, "number", "indicator", true, true);
 
-		result = await this.checkGroupAsync("admin", "admin");
-		this.log.info("check group user admin group admin: " + result);
+			// Create Commands
+			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.setSpeed", "state", "Speed", 1, "number", "level", true, true, 1, 10);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.powerOn", "state", "Power On", false, "boolean", "button", false, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.powerOff", "state", "Power Off", false, "boolean", "button", false, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.setAuto", "state", "Automatic Mode", false, "boolean", "button", false, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.buttonPower", "state", "Power Button", false, "boolean", "button", false, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.buttonTimer", "state", "Timer Button", false, "boolean", "button", false, true);
+			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.syncTime", "state", "Sync Time", false, "boolean", "button", false, true);
+
+			await this.subscribeStates(device.name + ".commands.*");
+		}
+
+		// Indicate that the connection has been established
+		this.setState("info.connnection", true, true);
 	}
 
 	/**
@@ -94,11 +101,6 @@ class Bayernluefter extends utils.Adapter {
 	 */
 	onUnload(callback) {
 		try {
-			// Here you must clear all timeouts or intervals that may still be active
-			// clearTimeout(timeout1);
-			// clearTimeout(timeout2);
-			// ...
-			// clearInterval(interval1);
 
 			callback();
 		} catch (e) {
@@ -106,56 +108,174 @@ class Bayernluefter extends utils.Adapter {
 		}
 	}
 
-	// If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-	// You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-	// /**
-	//  * Is called if a subscribed object changes
-	//  * @param {string} id
-	//  * @param {ioBroker.Object | null | undefined} obj
-	//  */
-	// onObjectChange(id, obj) {
-	// 	if (obj) {
-	// 		// The object was changed
-	// 		this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-	// 	} else {
-	// 		// The object was deleted
-	// 		this.log.info(`object ${id} deleted`);
-	// 	}
-	// }
-
 	/**
 	 * Is called if a subscribed state changes
 	 * @param {string} id
 	 * @param {ioBroker.State | null | undefined} state
 	 */
-	onStateChange(id, state) {
-		if (state) {
-			// The state was changed
-			this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-		} else {
-			// The state was deleted
-			this.log.info(`state ${id} deleted`);
+	async onStateChange(id, state) {
+		if (!state) return;
+		if(state.val == false) return;
+
+		const id_splits = id.split(".");
+		const realid = id_splits[2] + "." + id_splits[3] + "." + id_splits[4];
+		const device = await this.GetDeviceByName(id_splits[2]);
+
+		if(id.includes(".setSpeed")) {
+			const res = await this.sendHttpRequest("http://" + device.ip + ":" + device.port + "/?speed=" + state.val, device.name);
+			if(!res) return this.log.error("An error has occured while trying to set Device " + device.name + " Speed to " + state.val);
+			await this.setState(device.name + ".states.speed_in", state.val, true);
+			await this.setState(device.name + ".states.speed_out", state.val, true);
+			await this.setState(realid, state.val, true);
+		} else if(id.includes(".powerOn")) {
+			const res = await this.sendHttpRequest("http://" + device.ip + ":" + device.port + "/?power=on");
+			if(!res) return this.log.error("An error has occured while trying to power on device " + device.name);
+			await this.setState(device.name + ".states.SystemOn", 1, true);
+			await this.setState(realid, false);
+		} else if(id.includes(".powerOff")) {
+			const res = await this.sendHttpRequest("http://" + device.ip + ":" + device.port + "/?power=off");
+			if(!res) return this.log.error("An error has occured while trying to power off device " + device.name);
+			await this.setState(device.name + ".states.SystemOn", 0, true);
+			await this.setState(realid, false);
+		} else if(id.includes(".setAuto")) {
+			const res = await this.sendHttpRequest("http://" + device.ip + ":" + device.port + "/?speed=0");
+			if(!res) return this.log.error("An error has occured while trying to set automatic mode for device " + device.name);
+			await this.setState(device.name + ".states.speed_in", 0, true);
+			await this.setState(device.name + ".states.speed_out", 0, true);
+			await this.setState(realid, false);
+		} else if(id.includes(".buttonPower")) {
+			const res = await this.sendHttpRequest("http://" + device.ip + ":" + device.port + "/?button=power");
+			if(!res) return this.log.error("An error has occured while trying to send power button for device " + device.name);
+			await this.setState(realid, false);
+		} else if(id.includes(".buttonTimer")) {
+			const res = await this.sendHttpRequest("http://" + device.ip + ":" + device.port + "/?button=timer");
+			if(!res) return this.log.error("An error has occured while trying to send power button to device " + device.name);
+			await this.setState(realid, false);
+		} else if(id.includes(".syncTime")) {
+			const res = await this.sendHttpRequest("http://" + device.ip + ":" + device.port + "/index.html?TimeSync=1");
+			if(!res) return this.log.error("An error has occured while trying to sync time for device " + device.name);
+			await this.setState(realid, false);
 		}
 	}
 
-	// If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-	// /**
-	//  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-	//  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-	//  * @param {ioBroker.Message} obj
-	//  */
-	// onMessage(obj) {
-	// 	if (typeof obj === "object" && obj.message) {
-	// 		if (obj.command === "send") {
-	// 			// e.g. send email or pushover or whatever
-	// 			this.log.info("send command");
+	/**
+	 * Creates an object in the object db. Existing objects are overwritten.
+	 * @param {String} id ID
+	 * @param {"host" | "instance" | "config" | "channel" | "state" | "device" | "folder" | "enum" | "meta" | "adapter" | "user" | "group" | "script" | "chart"} type Type
+	 * @param {ioBroker.StringOrTranslated} name The name of this object as a simple string or an object with translations
+	 * @param {ioBroker.ObjectCommon.def} def the default value
+	 * @param {ioBroker.CommonType} common_type Type of this state. See https://github.com/ioBroker/ioBroker/blob/master/doc/SCHEMA.md#state-commonrole for a detailed description
+	 * @param {String} role role of the state (used in user interfaces to indicate which widget to choose)
+	 * @param {Boolean} read if this state is readable
+	 * @param {Boolean} write if this state is writable
+	 * @param {Number} min Minimum (Optional)
+	 * @param {Number} max Maximum (Optional)
+	 */
+	async setObjectNotExistsAsyncEasy(id, type, name, def, common_type, role, read, write, min = -1, max = -1) {
+		const object = await this.getObjectAsync(id);
+		if (object == null) {
+			if (min != -1 && max != -1) {
+				await this.setObjectNotExistsAsync(id, { type: type, common: { name: name, def: def, type: common_type, role: role, read: read, write: write, min: min, max: max } });
+			} else {
+				await this.setObjectNotExistsAsync(id, { type: type, common: { name: name, def: def, type: common_type, role: role, read: read, write: write } });
+			}
+		} else {
+			if(id.includes(".data.")) {
+				await this.setStateAsync(id, def, "string");
+			} else if(id.includes(".parameter.")) {
+				await this.setStateAsync(id, parseFloat(def), "number");
+			} else if(id.includes(".states.")) {
+				await this.setStateAsync(id, parseFloat(def), "number");
+			}
+		}
+	}
 
-	// 			// Send response in callback if required
-	// 			if (obj.callback) this.sendTo(obj.from, obj.command, "Message received", obj.callback);
-	// 		}
-	// 	}
-	// }
+	/**
+	 * Returns all devices in config
+	 * @returns All Devices in Config
+	 */
+	GetDevices() {
+		return this.config.devices;
+	}
 
+	/**
+	 * Get Device Info by Name
+	 * @param {String} name Device name
+	 */
+	async GetDeviceByName(name) {
+		const devices = await this.GetDevices();
+		if(devices == null || !devices) return null;
+		let device = null;
+		for await(const devicen of devices) {
+			if(devicen.name == name) {
+				device = devicen;
+				break;
+			}
+		}
+		return device;
+	}
+
+	/**
+	 *
+	 * @param {String} url URL to get Data from
+	 * @param {String} deviceName Device Name
+	 */
+	async GetHttpRequest(url, deviceName) {
+		let response = null;
+		try {
+			response = await NodeFetch(url);
+		} catch(error) {
+			if (error.code == "ETIMEDOUT") {
+				this.log.error("An error has occured while trying to get response from device " + deviceName + ". The Connection timed out!");
+				return null;
+			}
+			if (error.code == "ECONNREFUSED") {
+				this.log.error("An error has occured while trying to get response from device " + deviceName + ". The Connection has been refused!");
+				return null;
+			}
+			this.log.error("An unexpected error has occred while trying to get response from device " + deviceName + ".");
+			return null;
+		}
+
+		let data = null;
+		try {
+			data = await response.json();
+		} catch(error) {
+			if(error.type == "invalid-json") {
+				this.log.error("An error has occured while trying to format json data. Did you setup the template correctly? Go to LINK to setup template correctly");
+				return null;
+			}
+			this.log.error("Unexpected Error while trying to format json data! " + error);
+			return null;
+		}
+		if (data == null) return null;
+		return data;
+	}
+
+	/**
+	 * Send HTTP Request without returning any data
+	 * @param {String} url URL to send the Command
+	 * @param {String} deviceName Device Name
+	 */
+	async sendHttpRequest(url, deviceName) {
+		let response = null;
+		try {
+			response = await NodeFetch(url);
+		} catch(error) {
+			if (error.code == "ETIMEDOUT") {
+				this.log.error("An error has occured while trying to send request to device " + deviceName + ". The Connection timed out!");
+				return null;
+			}
+			if (error.code == "ECONNREFUSED") {
+				this.log.error("An error has occured while trying to send request to device " + deviceName + ". The Connection has been refused!");
+				return null;
+			}
+			this.log.error("An unexpected error has occred while trying to send request to device " + deviceName + ".");
+		}
+
+		if (response.status == 200 && response.statusText == "OK") return true;
+		return false;
+	}
 }
 
 if (require.main !== module) {

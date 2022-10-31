@@ -78,8 +78,7 @@
 		]
 	},
 	"native": {
-		"option1": true,
-		"option2": "42"
+		"devices": null
 	},
 	"objects": [],
 	"instanceObjects": [
