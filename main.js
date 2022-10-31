@@ -39,7 +39,32 @@ class Bayernluefter extends utils.Adapter {
 			return;
 		}
 
+		await this.checkDevices();
+		this.pullInterval = setInterval(async () => {
+			await this.checkDevices();
+		}, this.config.pullInterval * 1000);
 
+		// Indicate that the connection has been established
+		this.setState("info.connnection", true, true);
+	}
+
+	/**
+	 * Is called when adapter shuts down - callback has to be called under any circumstances!
+	 * @param {() => void} callback
+	 */
+	onUnload(callback) {
+		try {
+
+			callback();
+		} catch (e) {
+			callback();
+		}
+	}
+
+	/**
+	 * Checking Devices and updating Objects/States
+	 */
+	async checkDevices() {
 		for await(const device of this.GetDevices() || []) {
 			const exporttxt = await this.GetHttpRequest("http://" + device.ip + ":" + device.port + "/export.txt", device.name);
 			const deviceInfo = await this.GetHttpRequest("http://" + device.ip + ":" + device.port + "/?export=0", device.name);
@@ -89,22 +114,6 @@ class Bayernluefter extends utils.Adapter {
 			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.syncTime", "state", "Sync Time", false, "boolean", "button", false, true);
 
 			await this.subscribeStates(device.name + ".commands.*");
-		}
-
-		// Indicate that the connection has been established
-		this.setState("info.connnection", true, true);
-	}
-
-	/**
-	 * Is called when adapter shuts down - callback has to be called under any circumstances!
-	 * @param {() => void} callback
-	 */
-	onUnload(callback) {
-		try {
-
-			callback();
-		} catch (e) {
-			callback();
 		}
 	}
 

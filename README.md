@@ -19,6 +19,9 @@ Connects BayernLüfter Data into IoBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Added Update Interval
+
 ### 1.0.2 (2022-10-31)
 * Fixed Node-Fetch Import
 

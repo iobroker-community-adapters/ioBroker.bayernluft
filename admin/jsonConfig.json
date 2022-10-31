@@ -2,6 +2,13 @@
 	"i18n": true,
 	"type": "panel",
 	"items": {
+		"pullInterval": {
+			"type": "number",
+			"label": "Set the Update Interval (seconds)",
+			"help": "Set the Update Interval (seconds)",
+			"default": 60,
+			"newLine": true
+		},
 		"devices": {
 			"type": "table",
 			"noDelete": false,
