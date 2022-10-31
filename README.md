@@ -10,15 +10,68 @@
 
 **Tests:** ![Test and Release](https://github.com/Marco15453/ioBroker.bayernluefter/workflows/Test%20and%20Release/badge.svg)
 
-## bayernluefter adapter for ioBroker
+## BayernLüfter Adapter for ioBroker
+Connects BayernLüfter into IoBroker
 
-Connects BayernLüfter Data into IoBroker
+## What needs to be done?
+To use this adapter, you need to change the export template of the device
+**Be sure to follow the steps below**
+
+## How to change the Template?
+1. Go to the Interface of your Device
+2. Click on the Settings Gear to head to the Settings
+3. Scroll Down until you see the Expert Mode
+4. Delete the file 'export.txt' (Be sure to backup it before you continue)
+5. Create a new file on your Desktop called 'export.txt' (Be sure it is an Text File)
+6. Open the file and paste this into it.
+```json
+{
+    "data": {
+        "date": "~Date~",
+        "time": "~Time~",
+        "name": "~DeviceName~",
+        "mac": "~MAC~",
+        "local_IP": "~LocalIP~",
+        "rssi": "~RSSI~",
+        "fw_MainController": "~FW_MainController~",
+        "fw_WiFi": "~FW_WiFi~"
+    },
+    "parameter": {
+        "temperature_In": "~Temp_In~",
+        "temperature_Out": "~Temp_Out~",
+        "temperature_Fresh": "~Temp_Fresh~",
+        "rel_Humidity_In": "~rel_Humidity_In~",
+        "rel_Humidity_Out": "~rel_Humidity_Out~",
+        "abs_Humidity_In": "~abs_Humidity_In~",
+        "abs_Humidity_Out": "~abs_Humidity_Out~",
+        "efficiency": "~Efficiency~",
+        "humidity_Transport": "~Humidity_Transport~"
+    },
+    "states": {
+        "speed_In": "~Speed_In~",
+        "speed_Out": "~Speed_Out~",
+        "antiFreeze": "~Speed_AntiFreeze~",
+        "SystemOn": "~_SystemOn~",
+        "AntiFreeze": "~_FrostschutzAktiv~",
+        "Fixed_Speed": "~_Frozen~",
+        "Defrosting": "~_AbtauMode~",
+        "Landlord_Mode": "~_VermieterMode~",
+        "Cross_Ventilation": "~_QuerlueftungAktiv~",
+        "Timer_active": "~_MaxMode~"
+    }
+}
+```
+7. Save the file and head back on the Devices Interface and upload the new 'export.txt' file.
+8. Your Done
 
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Updated README
+
 ### 1.1.1 (2022-10-31)
 * Interval Hotfix
 
