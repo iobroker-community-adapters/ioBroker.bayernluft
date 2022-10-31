@@ -6,7 +6,7 @@
  */
 
 const utils = require("@iobroker/adapter-core");
-const NodeFetch = require("node-fetch");
+const NodeFetch = (...args) => import("node-fetch").then(({default: fetch}) => fetch(...args));
 
 // @ts-ignore
 class Bayernluefter extends utils.Adapter {
