@@ -20,7 +20,7 @@ Connects BayernLüfter Data into IoBroker
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
-* Hotfix Clearing Interval
+* Interval Hotfix
 
 ### 1.1.0 (2022-10-31)
 * Added Update Interval
