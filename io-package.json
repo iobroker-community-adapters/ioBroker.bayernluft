@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluefter",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "news": {
+      "1.1.1": {
+        "en": "Interval Hotfix",
+        "de": "Über uns",
+        "ru": "Интервал Hotfix",
+        "pt": "Hotfix de Intervalo",
+        "nl": "Interval Hotfix",
+        "fr": "Hotfix Interval",
+        "it": "Intervallo Hotfix",
+        "es": "Interval Hotfix",
+        "pl": "Interval Hot fix",
+        "uk": "Інтервал Hotfix",
+        "zh-cn": "Interval Hotfix"
+      },
       "1.1.0": {
         "en": "Added Update Interval",
         "de": "Update Interval",
