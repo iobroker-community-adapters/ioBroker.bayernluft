@@ -19,9 +19,8 @@ Connects BayernLüfter Data into IoBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
-* (Marco15453) initial release
+### 1.0.0 (2022-10-31)
+* Initial Release (Test Release)
 
 ## License
 MIT License
