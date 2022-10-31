@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluefter",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "news": {
+      "1.1.2": {
+        "en": "Updated README",
+        "de": "README aktualisiert",
+        "ru": "Обновлено README",
+        "pt": "README atualizado",
+        "nl": "Verouderd",
+        "fr": "Actualisé README",
+        "it": "README aggiornato",
+        "es": "README actualizado",
+        "pl": "Updatek README",
+        "uk": "Оновлено README",
+        "zh-cn": "更新的中小企业"
+      },
       "1.1.1": {
         "en": "Interval Hotfix",
         "de": "Über uns",
