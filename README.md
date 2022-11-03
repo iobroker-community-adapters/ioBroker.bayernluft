@@ -69,6 +69,11 @@ To use this adapter, you need to change the export template of the device
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Removed unused packages
+* Fixed Double Requests on Startup
+* Fixed the Connection Bug
+
 ### 1.1.2 (2022-10-31)
 * Updated README
 

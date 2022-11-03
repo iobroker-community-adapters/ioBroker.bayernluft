@@ -31,7 +31,7 @@ class Bayernluefter extends utils.Adapter {
 		// Initialize your adapter here
 
 		// Reset the connection indicator during startup
-		this.setState("info.connection", false, true);
+		await this.setStateAsync("info.connection", false, true);
 
 		if (this.config.devices == null) {
 			this.log.error("No devices has been set, disabling adapter!");
@@ -39,22 +39,21 @@ class Bayernluefter extends utils.Adapter {
 			return;
 		}
 
-		await this.checkDevices();
 		this.pullInterval = setInterval(async () => {
 			await this.checkDevices();
 		}, this.config.pullInterval * 1000);
 
 		// Indicate that the connection has been established
-		this.setState("info.connnection", true, true);
+		await this.setStateAsync("info.connection", true, true);
 	}
 
 	/**
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
 	 * @param {() => void} callback
 	 */
-	onUnload(callback) {
+	async onUnload(callback) {
 		try {
-			this.setState("info.connection", false, true);
+			await this.setStateAsync("info.connection", false, true);
 			this.pullInterval && clearInterval(this.pullInterval);
 			callback();
 		} catch (e) {
@@ -114,7 +113,7 @@ class Bayernluefter extends utils.Adapter {
 			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.buttonTimer", "state", "Timer Button", false, "boolean", "button", false, true);
 			await this.setObjectNotExistsAsyncEasy(device.name + ".commands.syncTime", "state", "Sync Time", false, "boolean", "button", false, true);
 
-			await this.subscribeStates(device.name + ".commands.*");
+			await this.subscribeStatesAsync(device.name + ".commands.*");
 		}
 	}
 
