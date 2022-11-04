@@ -1,17 +1,17 @@
 ![Logo](admin/bayernluefter.png)
 # ioBroker.bayernluefter
 
-[![NPM version](https://img.shields.io/npm/v/iobroker.bayernluefter.svg)](https://www.npmjs.com/package/iobroker.bayernluefter)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.bayernluefter.svg)](https://www.npmjs.com/package/iobroker.bayernluefter)
-![Number of Installations](https://iobroker.live/badges/bayernluefter-installed.svg)
-![Current version in stable repository](https://iobroker.live/badges/bayernluefter-stable.svg)
+[![NPM version](https://img.shields.io/npm/v/iobroker.bayernluft.svg)](https://www.npmjs.com/package/iobroker.bayernluft)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.bayernluft.svg)](https://www.npmjs.com/package/iobroker.bayernluft)
+![Number of Installations](https://iobroker.live/badges/bayernluft-installed.svg)
+![Current version in stable repository](https://iobroker.live/badges/bayernluft-stable.svg)
 
-[![NPM](https://nodei.co/npm/iobroker.bayernluefter.png?downloads=true)](https://nodei.co/npm/iobroker.bayernluefter/)
+[![NPM](https://nodei.co/npm/iobroker.bayernluft.png?downloads=true)](https://nodei.co/npm/iobroker.bayernluft/)
 
-**Tests:** ![Test and Release](https://github.com/Marco15453/ioBroker.bayernluefter/workflows/Test%20and%20Release/badge.svg)
+**Tests:** ![Test and Release](https://github.com/Marco15453/ioBroker.bayernluft/workflows/Test%20and%20Release/badge.svg)
 
-## BayernLüfter Adapter for ioBroker
-Connects BayernLüfter into IoBroker
+## BayernLuft Adapter for ioBroker
+Connects BayernLuft into IoBroker
 
 ## What needs to be done?
 To use this adapter, you need to change the export template of the device
@@ -69,6 +69,9 @@ To use this adapter, you need to change the export template of the device
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Updated Repo Name
+
 ### 1.2.0 (2022-11-03)
 * Removed unused packages
 * Fixed Double Requests on Startup

@@ -9,7 +9,7 @@ const utils = require("@iobroker/adapter-core");
 const NodeFetch = (...args) => import("node-fetch").then(({default: fetch}) => fetch(...args));
 
 // @ts-ignore
-class Bayernluefter extends utils.Adapter {
+class Bayernluft extends utils.Adapter {
 
 	/**
 	 * @param {Partial<utils.AdapterOptions>} [options={}]
@@ -17,7 +17,7 @@ class Bayernluefter extends utils.Adapter {
 	constructor(options) {
 		super({
 			...options,
-			name: "bayernluefter",
+			name: "bayernluft",
 		});
 		this.on("ready", this.onReady.bind(this));
 		this.on("stateChange", this.onStateChange.bind(this));
@@ -292,8 +292,8 @@ if (require.main !== module) {
 	/**
 	 * @param {Partial<utils.AdapterOptions>} [options={}]
 	 */
-	module.exports = (options) => new Bayernluefter(options);
+	module.exports = (options) => new Bayernluft(options);
 } else {
 	// otherwise start the instance directly
-	new Bayernluefter();
+	new Bayernluft();
 }

@@ -1,12 +1,12 @@
 {
-  "name": "iobroker.bayernluefter",
+  "name": "iobroker.bayernluft",
   "version": "1.2.0",
-  "description": "Connects BayernLüfter Data into IoBroker",
+  "description": "Connects BayernLuft into IoBroker",
   "author": {
     "name": "Marco15453",
     "email": "support@marco15453.xyz"
   },
-  "homepage": "https://github.com/Marco15453/ioBroker.bayernluefter",
+  "homepage": "https://github.com/Marco15453/ioBroker.bayernluft",
   "license": "MIT",
   "keywords": [
     "Bayern",
@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Marco15453/ioBroker.bayernluefter.git"
+    "url": "https://github.com/Marco15453/ioBroker.bayernluft.git"
   },
   "engines": {
     "node": ">= 16"
@@ -70,7 +70,7 @@
     "release": "release-script"
   },
   "bugs": {
-    "url": "https://github.com/Marco15453/ioBroker.bayernluefter/issues"
+    "url": "https://github.com/Marco15453/ioBroker.bayernluft/issues"
   },
   "readmeFilename": "README.md"
 }

@@ -1,14 +1,13 @@
 {
 	"cli": true,
 	"target": "directory",
-	"adapterName": "bayernluefter",
-	"title": "Bayern Lüfter",
-	"description": "Connects BayernLüfter Data into IoBroker",
+	"adapterName": "bayernluft",
+	"title": "Bayern Luft",
+	"description": "Connects BayernLuft into IoBroker",
 	"keywords": [
 		"Bayern",
-		"Lüfter",
-		"Bayern Lüfter",
-		"luefter"
+		"Luft",
+		"Bayern Luft"
 	],
 	"expert": "yes",
 	"features": [
