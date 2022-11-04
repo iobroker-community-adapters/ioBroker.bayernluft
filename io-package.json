@@ -95,39 +95,39 @@
         "zh-cn": "初始释放(试验释放)"
       }
     },
-    "title": "Bayern Lüfter",
+    "title": "BayernLuft",
     "titleLang": {
-      "en": "Bayern Lüfter",
-      "de": "Bayern-Lüfter",
+      "en": "BayernLuft",
+      "de": "BayernLuft",
       "ru": "Бавария Люфтер",
-      "pt": "Bayern Lüfter",
-      "nl": "Bayern Lüfter",
-      "fr": "Bayern Lufter",
-      "it": "Bayern Lufter",
-      "es": "Bayern Lufter",
-      "pl": "Bayern Lüfter",
+      "pt": "BayernLuft",
+      "nl": "BayernLuft",
+      "fr": "BayernLuft",
+      "it": "BayernLuft",
+      "es": "BayernLuft",
+      "pl": "BayernLuft",
       "zh-cn": "拜仁吕夫特"
     },
     "desc": {
-      "en": "Connects BayernLüfter Data into IoBroker",
-      "de": "Verbindet BayernLüfter Data mit IoBroker",
-      "ru": "Подключает данные BayernLüfter к IoBroker",
-      "pt": "Conecta dados do BayernLüfter ao IoBroker",
-      "nl": "Verbindt BayernLüfter-gegevens met IoBroker",
-      "fr": "Connecte les données BayernLüfter à IoBroker",
-      "it": "Collega BayernLüfter Data a IoBroker",
-      "es": "Conecta los datos de BayernLüfter con IoBroker",
-      "pl": "Łączy dane BayernLüfter z IoBroker",
-      "zh-cn": "将 BayernLüfter 数据连接到 IoBroker"
+      "en": "Connects BayernLuft Data into IoBroker",
+      "de": "Verbindet BayernLuft Data mit IoBroker",
+      "ru": "Подключает данные BayernLuft к IoBroker",
+      "pt": "Conecta dados do BayernLuft ao IoBroker",
+      "nl": "Verbindt BayernLuft-gegevens met IoBroker",
+      "fr": "Connecte les données BayernLuft à IoBroker",
+      "it": "Collega BayernLuft Data a IoBroker",
+      "es": "Conecta los datos de BayernLuft con IoBroker",
+      "pl": "Łączy dane BayernLuft z IoBroker",
+      "zh-cn": "将 BayernLuft 数据连接到 IoBroker"
     },
     "authors": [
       "Marco15453 <support@marco15453.xyz>"
     ],
     "keywords": [
       "Bayern",
-      "Lüfter",
-      "Bayern Lüfter",
-      "luefter"
+      "Luft",
+      "BayernLuft",
+      "LuftBayern"
     ],
     "license": "MIT",
     "platform": "Javascript/Node.js",

@@ -1,5 +1,5 @@
-![Logo](admin/bayernluefter.png)
-# ioBroker.bayernluefter
+![Logo](admin/bayernluft.png)
+# ioBroker.bayernluft
 
 [![NPM version](https://img.shields.io/npm/v/iobroker.bayernluft.svg)](https://www.npmjs.com/package/iobroker.bayernluft)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.bayernluft.svg)](https://www.npmjs.com/package/iobroker.bayernluft)
@@ -69,6 +69,9 @@ To use this adapter, you need to change the export template of the device
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* Updated Rest of Old Repo Name
+
 ### 1.2.1 (2022-11-04)
 * Updated Repo Name
 
