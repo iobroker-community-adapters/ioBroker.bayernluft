@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluft",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "news": {
+      "1.2.2": {
+        "en": "Updated Rest of Old Repo Name",
+        "de": "Aktualisierte Rest der alten Repo Name",
+        "ru": "Обновлено Остальное старое имя Repo",
+        "pt": "Resto atualizado do antigo nome de repo",
+        "nl": "Update Rest of Old Repo Name",
+        "fr": "Mise à jour le repos du nom de Old Repo",
+        "it": "Riposo aggiornato del vecchio nome Repo",
+        "es": "Resto actualizado del antiguo nombre Repo",
+        "pl": "Rest Old Repo Name (ang.)",
+        "uk": "Ажурирано Репо Назва",
+        "zh-cn": "A. 更新的旧回音"
+      },
       "1.2.1": {
         "en": "Updated Repo Name",
         "de": "Repo Name aktualisiert",
@@ -80,19 +93,6 @@
         "pl": "Oficjalna strona Node-Fetch Import",
         "uk": "Виправлено Node-Fetch Імпорт",
         "zh-cn": "Fixde-Fetch进口"
-      },
-      "1.0.1": {
-        "en": "Initial Release (Test Release)",
-        "de": "Erste Veröffentlichung (Test Release)",
-        "ru": "Первоначальный релиз (Test Release)",
-        "pt": "Lançamento inicial (Test Release)",
-        "nl": "Initiaal Release (Test Release)",
-        "fr": "Version initiale (Communiqué de test)",
-        "it": "Release iniziale (Test Release)",
-        "es": "Lanzamiento inicial",
-        "pl": "Initial Release (ang.)",
-        "uk": "Початковий реліз (Test Release)",
-        "zh-cn": "初始释放(试验释放)"
       }
     },
     "title": "BayernLuft",
