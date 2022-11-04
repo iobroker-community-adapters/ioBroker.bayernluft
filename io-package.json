@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluft",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "news": {
+      "1.2.1": {
+        "en": "Updated Repo Name",
+        "de": "Repo Name aktualisiert",
+        "ru": "Обновлено Repo Имя",
+        "pt": "Nome de Repo atualizado",
+        "nl": "Vertaling:",
+        "fr": "Actualisé Repo Name",
+        "it": "Nome Repo aggiornato",
+        "es": "Nombre de Repo actualizado",
+        "pl": "Nazwisko Repo",
+        "uk": "Оновлено Repo Name",
+        "zh-cn": "最新资料"
+      },
       "1.2.0": {
         "en": "Removed unused packages\nFixed Double Requests on Startup\nFixed the Connection Bug",
         "de": "Nicht verwendete Pakete entfernt\nFixed Double Requests auf Startup\nDer Verbindungsfehler behoben",
@@ -80,19 +93,6 @@
         "pl": "Initial Release (ang.)",
         "uk": "Початковий реліз (Test Release)",
         "zh-cn": "初始释放(试验释放)"
-      },
-      "1.0.0": {
-        "en": "initial release",
-        "de": "erstausstrahlung",
-        "ru": "начальный выпуск",
-        "pt": "lançamento inicial",
-        "nl": "niet",
-        "fr": "initial release",
-        "it": "rilascio iniziale",
-        "es": "liberación inicial",
-        "pl": "pierwsze wydanie",
-        "uk": "початковий реліз",
-        "zh-cn": "初步释放"
       }
     },
     "title": "Bayern Lüfter",

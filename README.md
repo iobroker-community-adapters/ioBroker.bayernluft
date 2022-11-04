@@ -69,7 +69,7 @@ To use this adapter, you need to change the export template of the device
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.2.1 (2022-11-04)
 * Updated Repo Name
 
 ### 1.2.0 (2022-11-03)
