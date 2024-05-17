@@ -105,7 +105,8 @@
       "it": "BayernLuft",
       "es": "BayernLuft",
       "pl": "BayernLuft",
-      "zh-cn": "拜仁吕夫特"
+      "zh-cn": "拜仁吕夫特",
+      "uk": "BayernLuft"
     },
     "desc": {
       "en": "Connects BayernLuft Data into IoBroker",
@@ -117,7 +118,8 @@
       "it": "Collega BayernLuft Data a IoBroker",
       "es": "Conecta los datos de BayernLuft con IoBroker",
       "pl": "Łączy dane BayernLuft z IoBroker",
-      "zh-cn": "将 BayernLuft 数据连接到 IoBroker"
+      "zh-cn": "将 BayernLuft 数据连接到 IoBroker",
+      "uk": "Підключає BayernLuft Data до IoBroker"
     },
     "authors": [
       "Marco15453 <support@marco15453.xyz>",
