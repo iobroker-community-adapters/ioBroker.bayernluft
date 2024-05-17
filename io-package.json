@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluft",
-    "version": "1.2.2",
+    "version": "2.0.0-alpha.0",
     "news": {
+      "2.0.0-alpha.0": {
+        "en": "Adapter has been move to iobroker-community-adapters organization\nDependencies have been updated",
+        "de": "Adapter wurde auf iobroker-community-Adapter Organisation verschoben\nAbhängigkeiten wurden aktualisiert",
+        "ru": "Адаптер перешел в организацию iobroker-community-adapters\nЗависимость обновлена",
+        "pt": "Adapter foi transferido para iobroker-community-adapters organização\nAs dependências foram atualizadas",
+        "nl": "Adapter is verplaatst naar iobroker-community-adapters organisatie\nAfhankelijkheden zijn bijgewerkt",
+        "fr": "Adaptateur a été transféré à iobroker-community-adaptateurs organisation\nLes dépendances ont été actualisées",
+        "it": "L'adattatore è stato spostato all'organizzazione iobroker-community-adapters\nLe dipendenze sono state aggiornate",
+        "es": "Adaptador ha sido trasladado a la organización de ibroker-community-adapters\nSe han actualizado las dependencias",
+        "pl": "Adapter został przeniesiony do organizacji adapterów iobroker- community\nZaktualizowano zależności",
+        "uk": "Перехід на iobroker-community-adapters\nЗалежність було оновлено",
+        "zh-cn": "适应者被转移到了职业经纪人-社区适应者组织\n依赖关系已更新"
+      },
       "1.2.2": {
         "en": "Updated Rest of Old Repo Name",
         "de": "Aktualisierte Rest der alten Repo Name",
@@ -80,19 +93,6 @@
         "pl": "Added Update Intervald (ang.)",
         "uk": "Додано оновлення Interval",
         "zh-cn": "补充最新间隔"
-      },
-      "1.0.2": {
-        "en": "Fixed Node-Fetch Import",
-        "de": "Feste Node-Fetch Import",
-        "ru": "Фиксированный импорт Node-Fetch",
-        "pt": "Importação de nó fixo",
-        "nl": "_",
-        "fr": "Node-Fetch Import fixe",
-        "it": "Importazione nodo fisso",
-        "es": "Importación de nodos fijos",
-        "pl": "Oficjalna strona Node-Fetch Import",
-        "uk": "Виправлено Node-Fetch Імпорт",
-        "zh-cn": "Fixde-Fetch进口"
       }
     },
     "titleLang": {

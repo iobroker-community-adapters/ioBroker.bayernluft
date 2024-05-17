@@ -72,11 +72,9 @@ This adapter would not have been possible without the great work of @Marco15453 
 <!--
 	Placeholder for the next version (at the beginning of the line):
 -->
-
-### **WORK IN PROGRESS**
+### 2.0.0-alpha.0 (2024-05-17)
 * (mcm1957) Adapter has been move to iobroker-community-adapters organization
 * (mcm1957) Dependencies have been updated
-
 
 ## License
 MIT License
