@@ -95,7 +95,6 @@
         "zh-cn": "Fixde-Fetch进口"
       }
     },
-    "title": "BayernLuft",
     "titleLang": {
       "en": "BayernLuft",
       "de": "BayernLuft",
@@ -121,7 +120,8 @@
       "zh-cn": "将 BayernLuft 数据连接到 IoBroker"
     },
     "authors": [
-      "Marco15453 <support@marco15453.xyz>"
+      "Marco15453 <support@marco15453.xyz>",
+      "mcm1957 <mcm57@gmx.at>"
     ],
     "keywords": [
       "Bayern",
@@ -129,14 +129,17 @@
       "BayernLuft",
       "LuftBayern"
     ],
-    "license": "MIT",
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
+    },
     "platform": "Javascript/Node.js",
-    "main": "main.js",
     "icon": "bayernluft.png",
     "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/Marco15453/ioBroker.bayernluft/main/admin/bayernluft.png",
-    "readme": "https://github.com/Marco15453/ioBroker.bayernluft/blob/main/README.md",
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.bayernluft/main/admin/bayernluft.png",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.bayernluft/blob/main/README.md",
     "loglevel": "info",
+    "tier": 2,
     "mode": "daemon",
     "type": "climate-control",
     "compact": true,
@@ -147,12 +150,12 @@
     },
     "dependencies": [
       {
-        "js-controller": ">=3.3.22"
+        "js-controller": ">=5.0.19"
       }
     ],
     "globalDependencies": [
       {
-        "admin": ">=5.1.13"
+        "admin": ">=6.13.16"
       }
     ]
   },
