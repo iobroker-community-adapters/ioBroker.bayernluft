@@ -64,43 +64,24 @@ To use this adapter, you need to change the export template of the device
 7. Save the file and head back on the Devices Interface and upload the new 'export.txt' file.
 8. Your Done
 
+## Credits
+
+This adapter would not have been possible without the great work of @Marco15453 (https://github.com/Marco15453), who create V1.x.x of this adapter.
+
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
-	### **WORK IN PROGRESS**
 -->
-### 1.2.2 (2022-11-04)
-* Updated Rest of Old Repo Name
 
-### 1.2.1 (2022-11-04)
-* Updated Repo Name
+### **WORK IN PROGRESS**
+* (mcm1957) Adapter has been move to iobroker-community-adapters organization
+* (mcm1957) Dependencies have been updated
 
-### 1.2.0 (2022-11-03)
-* Removed unused packages
-* Fixed Double Requests on Startup
-* Fixed the Connection Bug
-
-### 1.1.2 (2022-10-31)
-* Updated README
-
-### 1.1.1 (2022-10-31)
-* Interval Hotfix
-
-### 1.1.0 (2022-10-31)
-* Added Update Interval
-
-### 1.0.2 (2022-10-31)
-* Fixed Node-Fetch Import
-
-### 1.0.1 (2022-10-31)
-* Small Fixes for Repo
-
-### 1.0.0 (2022-10-31)
-* Initial Release (Test Release)
 
 ## License
 MIT License
 
+Copyright (c) 2024, iobroker-community-adapters <iobroker-community-adapters@gmx.de>
 Copyright (c) 2022 Marco15453 <support@marco15453.xyz>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
