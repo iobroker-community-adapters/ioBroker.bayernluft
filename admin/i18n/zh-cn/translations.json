@@ -1,5 +1,8 @@
 {
-    "bayernluft adapter settings": "bayernluft的适配器设置",
-    "option1": "选项1",
-    "option2": "选项2"
+    "bayernluft adapter settings": "bayernluft 的适配器设置",
+    "lblPollInterval": "更新间隔（秒）",
+    "hlpPollInterval": "更新间隔（以秒为单位）",
+    "lblIp": "IP地址",
+    "lblPort": "港口",
+    "lblName": "姓名"
 }

@@ -4,31 +4,32 @@
 	"items": {
 		"pollInterval": {
 			"type": "number",
-			"label": "Set the Update Interval (seconds)",
-			"help": "Set the Update Interval (seconds)",
+			"label": "lblPollIntervall",
+			"help": "hlpPollInterval",
 			"default": 60,
 			"newLine": true
 		},
 		"devices": {
 			"type": "table",
+			"label": "Devices",
 			"noDelete": false,
 			"items": [{
 				"type": "text",
 				"width": "33%",
 				"attr": "ip",
-				"title": "Device IP Address"
+				"title": "lblIp"
 			},
 			{
 				"type": "text",
 				"width": "33%",
 				"attr": "port",
-				"title": "Device Port"
+				"title": "lblPort"
 			},
 			{
 				"type": "text",
 				"width": "33%",
 				"attr": "name",
-				"title": "Device Name"
+				"title": "lblName"
 			}]
 		}
 	}

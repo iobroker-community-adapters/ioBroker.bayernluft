@@ -1,5 +1,8 @@
 {
 	"bayernluft adapter settings": "Adapter settings for bayernluft",
-	"option1": "option1",
-	"option2": "option2"
+	"lblPollInterval": "Update Interval (s)",
+	"hlpPollInterval": "Update Interval (in seconds)",
+	"lblIp": "IP Address",
+	"lblPort": "Port",
+	"lblName":"Name"
 }
