@@ -2,7 +2,7 @@
 	"i18n": true,
 	"type": "panel",
 	"items": {
-		"pullInterval": {
+		"pollInterval": {
 			"type": "number",
 			"label": "Set the Update Interval (seconds)",
 			"help": "Set the Update Interval (seconds)",

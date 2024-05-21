@@ -39,9 +39,9 @@ class Bayernluft extends utils.Adapter {
             return;
         }
 
-        this.pullInterval = setInterval(async () => {
+        this.pollInterval = setInterval(async () => {
             await this.checkDevices();
-        }, this.config.pullInterval * 1000);
+        }, this.config.pollInterval * 1000);
 
         // Indicate that the connection has been established
         await this.setStateAsync('info.connection', true, true);
@@ -54,7 +54,7 @@ class Bayernluft extends utils.Adapter {
     async onUnload(callback) {
         try {
             await this.setStateAsync('info.connection', false, true);
-            this.pullInterval && clearInterval(this.pullInterval);
+            this.pollInterval && clearInterval(this.pullInterval);
             callback();
         } catch (e) {
             callback();
