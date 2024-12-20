@@ -50,7 +50,7 @@ To use this adapter, you need to change the export template of the device
     "states": {
         "speed_In": "~Speed_In~",
         "speed_Out": "~Speed_Out~",
-        "antiFreeze": "~Speed_AntiFreeze~",
+        "speed_antiFreeze": "~Speed_AntiFreeze~",
         "SystemOn": "~_SystemOn~",
         "AntiFreeze": "~_FrostschutzAktiv~",
         "Fixed_Speed": "~_Frozen~",
