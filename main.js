@@ -129,7 +129,7 @@ class Bayernluft extends utils.Adapter {
         const id_splits = id.split('.');
         const realid = id_splits[2] + '.' + id_splits[3] + '.' + id_splits[4];
         const device = await this.GetDeviceByName(id_splits[2]);
-
+	this.log.debug('onStateChange: Device ' + device.name + ' IP ' + device.ip + ' Port ' + device.port + ' Value ' + state.val);
         if(id.includes('.setSpeed')) {
             const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?speed=' + state.val, device.name);
             if(!res) return this.log.error('An error has occured while trying to set Device ' + device.name + ' Speed to ' + state.val);
@@ -139,12 +139,12 @@ class Bayernluft extends utils.Adapter {
         } else if(id.includes('.powerOn')) {
             const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?power=on');
             if(!res) return this.log.error('An error has occured while trying to power on device ' + device.name);
-            await this.setState(device.name + '.states.SystemOn', 1, true);
+            await this.setState(device.name + '.states.systemon', 1, true);
             await this.setState(realid, false);
         } else if(id.includes('.powerOff')) {
             const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?power=off');
             if(!res) return this.log.error('An error has occured while trying to power off device ' + device.name);
-            await this.setState(device.name + '.states.SystemOn', 0, true);
+            await this.setState(device.name + '.states.systemon', 0, true);
             await this.setState(realid, false);
         } else if(id.includes('.setAuto')) {
             const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?speed=0');
