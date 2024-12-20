@@ -67,7 +67,7 @@ class Bayernluft extends utils.Adapter {
     async checkDevices() {
         for await(const device of this.GetDevices() || []) {
             const exporttxt = await this.GetHttpRequest('http://' + device.ip + ':' + device.port + '/export.txt', device.name);
-            const deviceInfo = await this.GetHttpRequest('http://' + device.ip + ':' + device.port + '/?export=0', device.name);
+            const deviceInfo = await this.GetHttpRequest('http://' + device.ip + ':' + device.port + '/index.html?export=1', device.name);
 
             if(exporttxt == null || deviceInfo == null) continue;
 
