@@ -129,7 +129,7 @@ class Bayernluft extends utils.Adapter {
         const id_splits = id.split('.');
         const realid = id_splits[2] + '.' + id_splits[3] + '.' + id_splits[4];
         const device = await this.GetDeviceByName(id_splits[2]);
-	this.log.debug('onStateChange: Device ' + device.name + ' IP ' + device.ip + ' Port ' + device.port + ' Value ' + state.val);
+	this.log.debug('onStateChange: id: ' + id + ' Device ' + device.name + ' IP ' + device.ip + ' Port ' + device.port + ' Value ' + state.val);
         if(id.includes('.setSpeed')) {
             const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?speed=' + state.val, device.name);
             if(!res) return this.log.error('An error has occured while trying to set Device ' + device.name + ' Speed to ' + state.val);
