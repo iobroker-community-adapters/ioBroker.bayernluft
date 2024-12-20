@@ -190,11 +190,11 @@ class Bayernluft extends utils.Adapter {
             }
         } else {
             if(id.includes('.data.')) {
-                await this.setStateAsync(id, def, 'string');
+                await this.setStateAsync(id, {val:def, ack:false});
             } else if(id.includes('.parameter.')) {
-                await this.setStateAsync(id, parseFloat(def), 'number');
+                await this.setStateAsync(id, {val:parseFloat(def), ack:false});
             } else if(id.includes('.states.')) {
-                await this.setStateAsync(id, parseFloat(def), 'number');
+                await this.setStateAsync(id, {val:parseFloat(def), ack:false});
             }
         }
     }
