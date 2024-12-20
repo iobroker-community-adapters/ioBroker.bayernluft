@@ -82,27 +82,27 @@ class Bayernluft extends utils.Adapter {
             await this.setObjectNotExistsAsyncEasy(device.name + '.data.fw_wifi', 'state', exporttxt.data.fw_WiFi.replaceAll('~', ''), deviceInfo.data.fw_WiFi, 'string', 'indicator', true, false);
 
             // Create Parameter Objects
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.temperature_in', 'state', exporttxt.parameter.temperature_In.replaceAll('~', ''), deviceInfo.parameter.temperature_In, 'number', 'indicator', true, false);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.temperature_out', 'state', exporttxt.parameter.temperature_Out.replaceAll('~', ''), deviceInfo.parameter.temperature_Out, 'number', 'indicator', true, false);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.temperature_fresh', 'state', exporttxt.parameter.temperature_Fresh.replaceAll('~', ''), deviceInfo.parameter.temperature_Fresh, 'number', 'indicator', true, false);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.rel_humidity_in', 'state', exporttxt.parameter.rel_Humidity_In.replaceAll('~', ''), deviceInfo.parameter.rel_Humidity_In, 'number', 'indicator', true, false);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.rel_humidity_out', 'state', exporttxt.parameter.rel_Humidity_Out.replaceAll('~', ''), deviceInfo.parameter.rel_Humidity_Out, 'number', 'indicator', true, false);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.abs_humidity_in', 'state', exporttxt.parameter.abs_Humidity_In.replaceAll('~', ''), deviceInfo.parameter.abs_Humidity_In, 'number', 'indicator', true, false);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.abs_humidity_out', 'state', exporttxt.parameter.abs_Humidity_Out.replaceAll('~', ''), deviceInfo.parameter.abs_Humidity_Out, 'number', 'indicator', true, false);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.efficiency', 'state', exporttxt.parameter.efficiency.replaceAll('~', ''), deviceInfo.parameter.efficiency, 'number', 'indicator', true, false);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.humidity_transport', 'state', exporttxt.parameter.humidity_Transport.replaceAll('~', ''), deviceInfo.parameter.humidity_Transport, 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.temperature_in', 'state', exporttxt.parameter.temperature_In.replaceAll('~', ''), parseFloat(deviceInfo.parameter.temperature_In), 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.temperature_out', 'state', exporttxt.parameter.temperature_Out.replaceAll('~', ''), parseFloat(deviceInfo.parameter.temperature_Out), 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.temperature_fresh', 'state', exporttxt.parameter.temperature_Fresh.replaceAll('~', ''), parseFloat(deviceInfo.parameter.temperature_Fresh), 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.rel_humidity_in', 'state', exporttxt.parameter.rel_Humidity_In.replaceAll('~', ''), parseFloat(deviceInfo.parameter.rel_Humidity_In), 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.rel_humidity_out', 'state', exporttxt.parameter.rel_Humidity_Out.replaceAll('~', ''), parseFloat(deviceInfo.parameter.rel_Humidity_Out), 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.abs_humidity_in', 'state', exporttxt.parameter.abs_Humidity_In.replaceAll('~', ''), parseFloat(deviceInfo.parameter.abs_Humidity_In), 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.abs_humidity_out', 'state', exporttxt.parameter.abs_Humidity_Out.replaceAll('~', ''), parseFloat(deviceInfo.parameter.abs_Humidity_Out), 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.efficiency', 'state', exporttxt.parameter.efficiency.replaceAll('~', ''), parseFloat(deviceInfo.parameter.efficiency), 'number', 'indicator', true, false);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.parameter.humidity_transport', 'state', exporttxt.parameter.humidity_Transport.replaceAll('~', ''), parseInt(deviceInfo.parameter.humidity_Transport), 'number', 'indicator', true, false);
 
             // Create States Objects
             await this.setObjectNotExistsAsyncEasy(device.name + '.states.speed_in', 'state', exporttxt.states.speed_In.replaceAll('~', ''), parseInt(deviceInfo.states.speed_In), 'number', 'indicator', true, true);
             await this.setObjectNotExistsAsyncEasy(device.name + '.states.speed_out', 'state', exporttxt.states.speed_Out.replaceAll('~', ''), parseInt(deviceInfo.states.speed_Out), 'number', 'indicator', true, true);
             await this.setObjectNotExistsAsyncEasy(device.name + '.states.antifreeze', 'state', exporttxt.states.antiFreeze.replaceAll('~', ''), parseInt(deviceInfo.states.antiFreeze), 'number', 'indicator', true, true);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.states.systemon', 'state', exporttxt.states.SystemOn.replaceAll('~', ''), deviceInfo.states.SystemOn, 'number', 'indicator', true, true);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.states.Antifreeze', 'state', exporttxt.states.AntiFreeze.replaceAll('~', ''), deviceInfo.states.AntiFreeze, 'number', 'indicator', true, true);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.states.fixed_speed', 'state', exporttxt.states.Fixed_Speed.replaceAll('~', ''), deviceInfo.states.Fixed_Speed, 'number', 'indicator', true, true);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.states.defrosting', 'state', exporttxt.states.Defrosting.replaceAll('~', ''), deviceInfo.states.Defrosting, 'number', 'indicator', true, true);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.states.landlord_mode', 'state', exporttxt.states.Landlord_Mode.replaceAll('~', ''), deviceInfo.states.Landlord_Mode, 'number', 'indicator', true, true);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.states.cross_ventilation', 'state', exporttxt.states.Cross_Ventilation.replaceAll('~', ''), deviceInfo.states.Cross_Ventilation, 'number', 'indicator', true, true);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.states.timer_active', 'state', exporttxt.states.Timer_active.replaceAll('~', ''), deviceInfo.states.Timer_active, 'number', 'indicator', true, true);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.states.systemon', 'state', exporttxt.states.SystemOn.replaceAll('~', ''), parseInt(deviceInfo.states.SystemOn), 'number', 'indicator', true, true);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.states.Antifreeze', 'state', exporttxt.states.AntiFreeze.replaceAll('~', ''), parseInt(deviceInfo.states.AntiFreeze), 'number', 'indicator', true, true);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.states.fixed_speed', 'state', exporttxt.states.Fixed_Speed.replaceAll('~', ''), parseInt(deviceInfo.states.Fixed_Speed), 'number', 'indicator', true, true);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.states.defrosting', 'state', exporttxt.states.Defrosting.replaceAll('~', ''), parseInt(deviceInfo.states.Defrosting), 'number', 'indicator', true, true);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.states.landlord_mode', 'state', exporttxt.states.Landlord_Mode.replaceAll('~', ''), parseInt(deviceInfo.states.Landlord_Mode), 'number', 'indicator', true, true);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.states.cross_ventilation', 'state', exporttxt.states.Cross_Ventilation.replaceAll('~', ''), parseInt(deviceInfo.states.Cross_Ventilation), 'number', 'indicator', true, true);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.states.timer_active', 'state', exporttxt.states.Timer_active.replaceAll('~', ''), parseInt(deviceInfo.states.Timer_active), 'number', 'indicator', true, true);
 
             // Create Commands
             await this.setObjectNotExistsAsyncEasy(device.name + '.commands.setSpeed', 'state', 'Speed', 1, 'number', 'level', true, true, 1, 10);
