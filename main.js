@@ -95,7 +95,7 @@ class Bayernluft extends utils.Adapter {
             // Create States Objects
             await this.setObjectNotExistsAsyncEasy(device.name + '.states.speed_in', 'state', exporttxt.states.speed_In.replaceAll('~', ''), parseInt(deviceInfo.states.speed_In), 'number', 'indicator', true, true);
             await this.setObjectNotExistsAsyncEasy(device.name + '.states.speed_out', 'state', exporttxt.states.speed_Out.replaceAll('~', ''), parseInt(deviceInfo.states.speed_Out), 'number', 'indicator', true, true);
-            await this.setObjectNotExistsAsyncEasy(device.name + '.states.antifreeze', 'state', exporttxt.states.antiFreeze.replaceAll('~', ''), parseInt(deviceInfo.states.antiFreeze), 'number', 'indicator', true, true);
+            await this.setObjectNotExistsAsyncEasy(device.name + '.states.speed_antifreeze', 'state', exporttxt.states.speed_antiFreeze.replaceAll('~', ''), parseInt(deviceInfo.states.speed_antiFreeze), 'number', 'indicator', true, true);
             await this.setObjectNotExistsAsyncEasy(device.name + '.states.systemon', 'state', exporttxt.states.SystemOn.replaceAll('~', ''), parseInt(deviceInfo.states.SystemOn), 'number', 'indicator', true, true);
             await this.setObjectNotExistsAsyncEasy(device.name + '.states.Antifreeze', 'state', exporttxt.states.AntiFreeze.replaceAll('~', ''), parseInt(deviceInfo.states.AntiFreeze), 'number', 'indicator', true, true);
             await this.setObjectNotExistsAsyncEasy(device.name + '.states.fixed_speed', 'state', exporttxt.states.Fixed_Speed.replaceAll('~', ''), parseInt(deviceInfo.states.Fixed_Speed), 'number', 'indicator', true, true);
