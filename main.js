@@ -123,48 +123,48 @@ class Bayernluft extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
     async onStateChange(id, state) {
-        if (!state) return;
-        if(state.val == false) return;
-
-        const id_splits = id.split('.');
-        const realid = id_splits[2] + '.' + id_splits[3] + '.' + id_splits[4];
-        const device = await this.GetDeviceByName(id_splits[2]);
-	this.log.debug('onStateChange: id: ' + id + ' Device ' + device.name + ' IP ' + device.ip + ' Port ' + device.port + ' Value ' + state.val);
-        if(id.includes('.setSpeed')) {
-            const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?speed=' + state.val, device.name);
-            if(!res) return this.log.error('An error has occured while trying to set Device ' + device.name + ' Speed to ' + state.val);
-            await this.setState(device.name + '.states.speed_in', state.val, true);
-            await this.setState(device.name + '.states.speed_out', state.val, true);
-            await this.setState(realid, state.val, true);
-        } else if(id.includes('.powerOn')) {
-            const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?power=on');
-            if(!res) return this.log.error('An error has occured while trying to power on device ' + device.name);
-            await this.setState(device.name + '.states.systemon', 1, true);
-            await this.setState(realid, false);
-        } else if(id.includes('.powerOff')) {
-            const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?power=off');
-            if(!res) return this.log.error('An error has occured while trying to power off device ' + device.name);
-            await this.setState(device.name + '.states.systemon', 0, true);
-            await this.setState(realid, false);
-        } else if(id.includes('.setAuto')) {
-            const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?speed=0');
-            if(!res) return this.log.error('An error has occured while trying to set automatic mode for device ' + device.name);
-            await this.setState(device.name + '.states.speed_in', 0, true);
-            await this.setState(device.name + '.states.speed_out', 0, true);
-            await this.setState(realid, false);
-        } else if(id.includes('.buttonPower')) {
-            const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?button=power');
-            if(!res) return this.log.error('An error has occured while trying to send power button for device ' + device.name);
-            await this.setState(realid, false);
-        } else if(id.includes('.buttonTimer')) {
-            const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?button=timer');
-            if(!res) return this.log.error('An error has occured while trying to send power button to device ' + device.name);
-            await this.setState(realid, false);
-        } else if(id.includes('.syncTime')) {
-            const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/index.html?TimeSync=1');
-            if(!res) return this.log.error('An error has occured while trying to sync time for device ' + device.name);
-            await this.setState(realid, false);
-        }
+        if (id && state && !state.ack)
+        {
+            const id_splits = id.split('.');
+            const realid = id_splits[2] + '.' + id_splits[3] + '.' + id_splits[4];
+            const device = await this.GetDeviceByName(id_splits[2]);
+            this.log.debug('onStateChange: id: ' + id + ' Device ' + device.name + ' IP ' + device.ip + ' Port ' + device.port + ' Value ' + state.val);
+            if(id.includes('.setSpeed')) {
+                const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?speed=' + state.val, device.name);
+                if(!res) return this.log.error('An error has occured while trying to set Device ' + device.name + ' Speed to ' + state.val);
+                await this.setState(device.name + '.states.speed_in', state.val, true);
+                await this.setState(device.name + '.states.speed_out', state.val, true);
+                await this.setState(realid, state.val, true);
+            } else if(id.includes('.powerOn')) {
+                const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?power=on');
+                if(!res) return this.log.error('An error has occured while trying to power on device ' + device.name);
+                await this.setState(device.name + '.states.systemon', 1, true);
+                //await this.setState(realid, false);
+            } else if(id.includes('.powerOff')) {
+                const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?power=off');
+                if(!res) return this.log.error('An error has occured while trying to power off device ' + device.name);
+                await this.setState(device.name + '.states.systemon', 0, true);
+                //await this.setState(realid, false);
+            } else if(id.includes('.setAuto')) {
+                const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?speed=0');
+                if(!res) return this.log.error('An error has occured while trying to set automatic mode for device ' + device.name);
+                await this.setState(device.name + '.states.speed_in', 0, true);
+                await this.setState(device.name + '.states.speed_out', 0, true);
+                //await this.setState(realid, false);
+            } else if(id.includes('.buttonPower')) {
+                const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?button=power');
+                if(!res) return this.log.error('An error has occured while trying to send power button for device ' + device.name);
+                //await this.setState(realid, false);
+            } else if(id.includes('.buttonTimer')) {
+                const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?button=timer');
+                if(!res) return this.log.error('An error has occured while trying to send power button to device ' + device.name);
+                //await this.setState(realid, false);
+            } else if(id.includes('.syncTime')) {
+                const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/index.html?TimeSync=1');
+                if(!res) return this.log.error('An error has occured while trying to sync time for device ' + device.name);
+                //await this.setState(realid, false);
+            }
+        }       
     }
 
     /**
