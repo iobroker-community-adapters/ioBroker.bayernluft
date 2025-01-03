@@ -3,6 +3,12 @@
 
 /*
  * Created with @iobroker/create-adapter v2.3.0
+ * 
+ *  Changelog:
+ *  @boriswerner 2024-12-20: 
+ *  - Corrected the API calls to match the new API (rev 2.0 version WS32231301, see: https://www.bayernluft.de/de/wlan32_changelist.html)
+ *  - Corrected the ACK-handling in onStateChange
+ * 
  */
 
 const utils = require('@iobroker/adapter-core');
@@ -28,8 +34,6 @@ class Bayernluft extends utils.Adapter {
 	 * Is called when databases are connected and adapter received configuration.
 	 */
     async onReady() {
-        // Initialize your adapter here
-
         // Reset the connection indicator during startup
         await this.setStateAsync('info.connection', false, true);
 
@@ -38,13 +42,17 @@ class Bayernluft extends utils.Adapter {
             this.disable();
             return;
         }
+        //initial check
+        await this.checkDevices();
+        
+        // Indicate that the connection has been established
+        await this.setStateAsync('info.connection', true, true);
 
+        //setup polling at interval
         this.pollInterval = setInterval(async () => {
             await this.checkDevices();
         }, this.config.pollInterval * 1000);
 
-        // Indicate that the connection has been established
-        await this.setStateAsync('info.connection', true, true);
     }
 
     /**
@@ -66,6 +74,7 @@ class Bayernluft extends utils.Adapter {
 	 */
     async checkDevices() {
         for await(const device of this.GetDevices() || []) {
+            this.log.debug("Polling data for device: " + device.name);
             const exporttxt = await this.GetHttpRequest('http://' + device.ip + ':' + device.port + '/export.txt', device.name);
             const deviceInfo = await this.GetHttpRequest('http://' + device.ip + ':' + device.port + '/index.html?export=1', device.name);
 
@@ -123,6 +132,8 @@ class Bayernluft extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
     async onStateChange(id, state) {
+        this.log.debug('onStateChange: id: ' + id + ' Value ' + state.val + ' ACK ' + state.ack);
+
         if (id && state && !state.ack)
         {
             const id_splits = id.split('.');
@@ -139,30 +150,30 @@ class Bayernluft extends utils.Adapter {
                 const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?power=on');
                 if(!res) return this.log.error('An error has occured while trying to power on device ' + device.name);
                 await this.setState(device.name + '.states.systemon', 1, true);
-                //await this.setState(realid, false);
+                await this.setState(realid, false, true);
             } else if(id.includes('.powerOff')) {
                 const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?power=off');
                 if(!res) return this.log.error('An error has occured while trying to power off device ' + device.name);
                 await this.setState(device.name + '.states.systemon', 0, true);
-                //await this.setState(realid, false);
+                await this.setState(realid, false, true);
             } else if(id.includes('.setAuto')) {
                 const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?speed=0');
                 if(!res) return this.log.error('An error has occured while trying to set automatic mode for device ' + device.name);
                 await this.setState(device.name + '.states.speed_in', 0, true);
                 await this.setState(device.name + '.states.speed_out', 0, true);
-                //await this.setState(realid, false);
+                await this.setState(realid, false, true);
             } else if(id.includes('.buttonPower')) {
                 const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?button=power');
                 if(!res) return this.log.error('An error has occured while trying to send power button for device ' + device.name);
-                //await this.setState(realid, false);
+                await this.setState(realid, false, true);
             } else if(id.includes('.buttonTimer')) {
                 const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/?button=timer');
                 if(!res) return this.log.error('An error has occured while trying to send power button to device ' + device.name);
-                //await this.setState(realid, false);
+                await this.setState(realid, false, true);
             } else if(id.includes('.syncTime')) {
                 const res = await this.sendHttpRequest('http://' + device.ip + ':' + device.port + '/index.html?TimeSync=1');
                 if(!res) return this.log.error('An error has occured while trying to sync time for device ' + device.name);
-                //await this.setState(realid, false);
+                await this.setState(realid, false, true);
             }
         }       
     }
