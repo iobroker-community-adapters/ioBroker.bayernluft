@@ -4,11 +4,6 @@
 /*
  * Created with @iobroker/create-adapter v2.3.0
  * 
- *  Changelog:
- *  @boriswerner 2024-12-20: 
- *  - Corrected the API calls to match the new API (rev 2.0 version WS32231301, see: https://www.bayernluft.de/de/wlan32_changelist.html)
- *  - Corrected the ACK-handling in onStateChange
- * 
  */
 
 const utils = require('@iobroker/adapter-core');
