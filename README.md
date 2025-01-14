@@ -74,13 +74,10 @@ This adapter would not have been possible without the great work of @Marco15453 
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 2.0.0-alpha.1 (2025-01-14)
+### **WORK IN PROGRESS**
 * (mcm1957) Adapter requires node.js 20, js-controller 6 and and admin 6 now.
 * (boriswerner) Corrected the API calls to match the new API (rev 2.0 version WS32231301, see: https://www.bayernluft.de/de/wlan32_changelist.html)
 * (boriswerner) Corrected the ACK-handling in onStateChange
-* (mcm1957) Dependencies have been updated
-
-### 2.0.0-alpha.0 (2024-05-17)
 * (mcm1957) Adapter has been move to iobroker-community-adapters organization
 * (mcm1957) Dependencies have been updated
 
