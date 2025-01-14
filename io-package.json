@@ -41,58 +41,6 @@
         "pl": "Nazwisko Repo",
         "uk": "Оновлено Repo Name",
         "zh-cn": "最新资料"
-      },
-      "1.2.0": {
-        "en": "Removed unused packages\nFixed Double Requests on Startup\nFixed the Connection Bug",
-        "de": "Nicht verwendete Pakete entfernt\nFixed Double Requests auf Startup\nDer Verbindungsfehler behoben",
-        "ru": "Удалены неиспользуемые пакеты\nИсправлены двойные запросы при запуске\nИсправлена связь Bug",
-        "pt": "Remover pacotes não utilizados\nSolicitações duplas fixas na inicialização\nCorrigido o Bug de conexão",
-        "nl": "Verwijderde onbruikbare pakketten\nQuality over Quantity (QoQ) Releases Vertaling:\nDe Connectie Bug",
-        "fr": "Enlevés inutilisés\nDoubles demandes fixes sur le démarrage\nCorrection du bug de connexion",
-        "it": "Pacchetti non utilizzati rimossi\nDoppie richieste riparate sull'avvio\nCorretto il bug di connessione",
-        "es": "Paquetes no utilizados\nSolicitudes dobles fijas en Startup\nArreglado el error de conexión",
-        "pl": "Przemieniono nieużywane pakiety\nFixed Double Requests (ang.)\nFixed Connection Bug (ang.)",
-        "uk": "Видалити невикористані пакети\nВиправлено подвійний запит на Startup\nВиправлено помилку з'єднання",
-        "zh-cn": "取消未用包\nFixed Double请求\n九. 确定"
-      },
-      "1.1.2": {
-        "en": "Updated README",
-        "de": "README aktualisiert",
-        "ru": "Обновлено README",
-        "pt": "README atualizado",
-        "nl": "Verouderd",
-        "fr": "Actualisé README",
-        "it": "README aggiornato",
-        "es": "README actualizado",
-        "pl": "Updatek README",
-        "uk": "Оновлено README",
-        "zh-cn": "更新的中小企业"
-      },
-      "1.1.1": {
-        "en": "Interval Hotfix",
-        "de": "Über uns",
-        "ru": "Интервал Hotfix",
-        "pt": "Hotfix de Intervalo",
-        "nl": "Interval Hotfix",
-        "fr": "Hotfix Interval",
-        "it": "Intervallo Hotfix",
-        "es": "Interval Hotfix",
-        "pl": "Interval Hot fix",
-        "uk": "Інтервал Hotfix",
-        "zh-cn": "Interval Hotfix"
-      },
-      "1.1.0": {
-        "en": "Added Update Interval",
-        "de": "Update Interval",
-        "ru": "Добавлено обновление Interval",
-        "pt": "Adicionado intervalo de atualização",
-        "nl": "Vertaling:",
-        "fr": "Ajout d ' une mise à jour",
-        "it": "Aggiornamento di aggiornamento",
-        "es": "Intervalo de actualización agregado",
-        "pl": "Added Update Intervald (ang.)",
-        "uk": "Додано оновлення Interval",
-        "zh-cn": "补充最新间隔"
       }
     },
     "titleLang": {
