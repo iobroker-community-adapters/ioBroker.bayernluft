@@ -124,7 +124,7 @@
   },
   "native": {
     "devices": null,
-    "pullInterval": 60
+    "pollInterval": 60
   },
   "objects": [],
   "instanceObjects": [
