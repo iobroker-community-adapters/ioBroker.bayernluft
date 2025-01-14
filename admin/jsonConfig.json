@@ -7,12 +7,22 @@
 			"label": "lblPollIntervall",
 			"help": "hlpPollInterval",
 			"default": 60,
-			"newLine": true
+			"newLine": true,
+			"xs": 12,
+			"sm": 12,
+			"md": 6,
+			"lg": 4,
+			"xl": 4
 		},
 		"devices": {
 			"type": "table",
 			"label": "Devices",
 			"noDelete": false,
+			"xs": 12,
+			"sm": 12,
+			"md": 6,
+			"lg": 4,
+			"xl": 4,
 			"items": [{
 				"type": "text",
 				"width": "33%",
