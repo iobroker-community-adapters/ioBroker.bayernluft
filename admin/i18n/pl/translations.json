@@ -4,5 +4,6 @@
     "hlpPollInterval": "Interwał aktualizacji (w sekundach)",
     "lblIp": "Adres IP",
     "lblPort": "Port",
-    "lblName": "Nazwa"
+    "lblName": "Nazwa",
+    "lblDevices": "Urządzenia"
 }

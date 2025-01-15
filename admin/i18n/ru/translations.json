@@ -4,5 +4,6 @@
     "hlpPollInterval": "Интервал обновления (в секундах)",
     "lblIp": "Айпи адрес",
     "lblPort": "Порт",
-    "lblName": "Имя"
+    "lblName": "Имя",
+    "lblDevices": "Устройства"
 }
