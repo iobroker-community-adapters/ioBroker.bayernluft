@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluft",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "news": {
+      "2.0.1": {
+        "en": "AdminUI and translations have been fixed.",
+        "de": "AdminUI und Übersetzungen wurden korrigiert.",
+        "ru": "Настройка и перевод исправлены.",
+        "pt": "AdminUI e traduções foram corrigidas.",
+        "nl": "AdminUI en vertalingen zijn opgelost.",
+        "fr": "L'administration et les traductions ont été corrigées.",
+        "it": "Gli amministratori e le traduzioni sono state riparate.",
+        "es": "AdminUI y traducciones han sido fijadas.",
+        "pl": "Administracja i tłumaczenia zostały ustalone.",
+        "uk": "Виправлено авторські переклади.",
+        "zh-cn": "行政UI和翻译已经固定."
+      },
       "2.0.0": {
         "en": "Adapter requires node.js 20, js-controller 6 and and admin 6 now.\nCorrected the API calls to match the new API (rev 2.0 version WS32231301, see: https://www.bayernluft.de/de/wlan32_changelist.html)\nCorrected the ACK-handling in onStateChange\nAdapter has been moved to iobroker-community-adapters organization\nDependencies have been updated",
         "de": "Adapter benötigt jetzt node.js 20, js-controller 6 und admin 6.\nAPI-Anrufe wurden an die neue API (rev 2.0 Version WS32231301, siehe: https://www.bayernluft.de/de/wlan32_changelist.html) angepasst\nDas ACK-Handling in onStateChange wurde korrigiert\nAdapter wurde in die iobroker-community-adapters Organisation verschoben\nAbhängigkeiten wurden aktualisiert",

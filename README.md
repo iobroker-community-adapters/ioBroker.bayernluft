@@ -74,7 +74,7 @@ This adapter would not have been possible without the great work of @Marco15453 
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 2.0.1 (2025-01-16)
 * (mcm1957) AdminUI and translations have been fixed.
 
 ### 2.0.0 (2025-01-14)
