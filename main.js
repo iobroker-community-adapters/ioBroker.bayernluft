@@ -260,7 +260,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.speed_out`,
@@ -270,7 +270,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.speed_antifreeze`,
@@ -280,7 +280,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.systemon`,
@@ -290,7 +290,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.Antifreeze`,
@@ -300,7 +300,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.fixed_speed`,
@@ -310,7 +310,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.defrosting`,
@@ -320,7 +320,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.landlord_mode`,
@@ -330,7 +330,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.cross_ventilation`,
@@ -340,7 +340,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.states.timer_active`,
@@ -350,7 +350,7 @@ class Bayernluft extends utils.Adapter {
                 'number',
                 'indicator',
                 true,
-                true,
+                false,
             );
 
             // Create Commands
@@ -365,6 +365,42 @@ class Bayernluft extends utils.Adapter {
                 true,
                 1,
                 10,
+            );
+            await this.setObjectNotExistsAsyncEasy(
+                `${device.name}.commands.setSpeedIn`,
+                'state',
+                'Speed In',
+                1,
+                'number',
+                'level',
+                true,
+                true,
+                0,
+                10,
+            );
+            await this.setObjectNotExistsAsyncEasy(
+                `${device.name}.commands.setSpeedOut`,
+                'state',
+                'Speed Out',
+                1,
+                'number',
+                'level',
+                true,
+                true,
+                0,
+                10,
+            );
+            await this.setObjectNotExistsAsyncEasy(
+                `${device.name}.commands.setSpeedAntiFreeze`,
+                'state',
+                'Speed AntiFreeze',
+                1,
+                'number',
+                'level',
+                true,
+                true,
+                0,
+                50,
             );
             await this.setObjectNotExistsAsyncEasy(
                 `${device.name}.commands.powerOn`,
@@ -447,7 +483,43 @@ class Bayernluft extends utils.Adapter {
             this.log.debug(
                 `onStateChange: id: ${id} Device ${device.name} IP ${device.ip} Port ${device.port} Value ${state.val}`,
             );
-            if (id.includes('.setSpeed')) {
+            if (id.includes('.setSpeedIn')) {
+                const res = await this.sendHttpRequest(
+                    `http://${device.ip}:${device.port}/?speedIn=${state.val}`,
+                    device.name,
+                );
+                if (!res) {
+                    return this.log.error(
+                        `An error has occured while trying to set Device ${device.name} Speed In to ${state.val}`,
+                    );
+                }
+                await this.setState(`${device.name}.states.speed_in`, state.val, true);
+                await this.setState(realid, state.val, true);
+            } else if (id.includes('.setSpeedOut')) {
+                const res = await this.sendHttpRequest(
+                    `http://${device.ip}:${device.port}/?speedOut=${state.val}`,
+                    device.name,
+                );
+                if (!res) {
+                    return this.log.error(
+                        `An error has occured while trying to set Device ${device.name} Speed Out to ${state.val}`,
+                    );
+                }
+                await this.setState(`${device.name}.states.speed_out`, state.val, true);
+                await this.setState(realid, state.val, true);
+            } else if (id.includes('.setSpeedAntiFreeze')) {
+                const res = await this.sendHttpRequest(
+                    `http://${device.ip}:${device.port}/?speedFrM=${state.val}`,
+                    device.name,
+                );
+                if (!res) {
+                    return this.log.error(
+                        `An error has occured while trying to set Device ${device.name} Speed AntiFreeze to ${state.val}`,
+                    );
+                }
+                await this.setState(`${device.name}.states.speed_antifreeze`, state.val, true);
+                await this.setState(realid, state.val, true);
+            } else if (id.includes('.setSpeed')) {
                 const res = await this.sendHttpRequest(
                     `http://${device.ip}:${device.port}/?speed=${state.val}`,
                     device.name,

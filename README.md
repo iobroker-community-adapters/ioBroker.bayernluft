@@ -64,6 +64,8 @@ To use this adapter, you need to change the export template of the device
 7. Save the file and head back on the Devices Interface and upload the new 'export.txt' file.
 8. Your Done, setup the device in the adapter instance. The standard port of the device is 80.
 
+## Nice to Know
+The commands commands.setSpeedIn, commands.setSpeedOut, commands.setSpeedAntiFreeze only work when the device is powered off. If the device is turned on, the commands are acknowledged by the device but nothing will happen (you can check manually in the corresponding states states.speed_in, states.speed_out and states.speed_antifreeze)
 
 ## Credits
 
@@ -73,6 +75,11 @@ This adapter would not have been possible without the great work of @Marco15453 
 <!--
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
+    * (boriswerner) implemented commands for individual fan speeds (see  WS32240427 in https://www.bayernluft.de/de/wlan32_changelist.html):
+        When device is turned off, the fans can be set indivudually (commands: setSpeedIn, setSpeedOut, setSpeedAntiFreeze)
+    * (boriswerner) changed states in "states"-folder to read-only
+    * (boriswerner) fixed update interval label and set default port
+
 -->
 ### 2.0.1 (2025-01-16)
 * (mcm1957) AdminUI and translations have been fixed.
