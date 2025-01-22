@@ -484,41 +484,62 @@ class Bayernluft extends utils.Adapter {
                 `onStateChange: id: ${id} Device ${device.name} IP ${device.ip} Port ${device.port} Value ${state.val}`,
             );
             if (id.includes('.setSpeedIn')) {
-                const res = await this.sendHttpRequest(
-                    `http://${device.ip}:${device.port}/?speedIn=${state.val}`,
-                    device.name,
-                );
-                if (!res) {
-                    return this.log.error(
-                        `An error has occured while trying to set Device ${device.name} Speed In to ${state.val}`,
+                const isSystemOnState = await this.getStateAsync(`${device.name}.states.systemon`);
+                if(isSystemOnState.val == 0) {
+                    const res = await this.sendHttpRequest(
+                        `http://${device.ip}:${device.port}/?speedIn=${state.val}`,
+                        device.name,
+                    );
+                    if (!res) {
+                        return this.log.error(
+                            `An error has occured while trying to set Device ${device.name} Speed In to ${state.val}`,
+                        );
+                    }
+                    await this.setState(`${device.name}.states.speed_in`, state.val, true);
+                    await this.setState(realid, state.val, true);
+                } else {
+                    return this.log.warn(
+                        `Setting Speed In to ${state.val} for Device ${device.name} was not set because the device is on! Individual fan speeds can only be set while the device is turned off.`,
                     );
                 }
-                await this.setState(`${device.name}.states.speed_in`, state.val, true);
-                await this.setState(realid, state.val, true);
             } else if (id.includes('.setSpeedOut')) {
-                const res = await this.sendHttpRequest(
-                    `http://${device.ip}:${device.port}/?speedOut=${state.val}`,
-                    device.name,
-                );
-                if (!res) {
-                    return this.log.error(
-                        `An error has occured while trying to set Device ${device.name} Speed Out to ${state.val}`,
+                const isSystemOnState = await this.getStateAsync(`${device.name}.states.systemon`);
+                if(isSystemOnState.val == 0) {
+                    const res = await this.sendHttpRequest(
+                        `http://${device.ip}:${device.port}/?speedOut=${state.val}`,
+                        device.name,
+                    );
+                    if (!res) {
+                        return this.log.error(
+                            `An error has occured while trying to set Device ${device.name} Speed Out to ${state.val}`,
+                        );
+                    }
+                    await this.setState(`${device.name}.states.speed_out`, state.val, true);
+                    await this.setState(realid, state.val, true);
+                } else {
+                    return this.log.warn(
+                        `Setting Speed Out to ${state.val} for Device ${device.name} was not set because the device is on! Individual fan speeds can only be set while the device is turned off.`,
                     );
                 }
-                await this.setState(`${device.name}.states.speed_out`, state.val, true);
-                await this.setState(realid, state.val, true);
             } else if (id.includes('.setSpeedAntiFreeze')) {
-                const res = await this.sendHttpRequest(
-                    `http://${device.ip}:${device.port}/?speedFrM=${state.val}`,
-                    device.name,
-                );
-                if (!res) {
-                    return this.log.error(
-                        `An error has occured while trying to set Device ${device.name} Speed AntiFreeze to ${state.val}`,
+                const isSystemOnState = await this.getStateAsync(`${device.name}.states.systemon`);
+                if(isSystemOnState.val == 0) {                    
+                    const res = await this.sendHttpRequest(
+                        `http://${device.ip}:${device.port}/?speedFrM=${state.val}`,
+                        device.name,
                     );
-                }
-                await this.setState(`${device.name}.states.speed_antifreeze`, state.val, true);
-                await this.setState(realid, state.val, true);
+                    if (!res) {
+                        return this.log.error(
+                            `An error has occured while trying to set Device ${device.name} Speed AntiFreeze to ${state.val}`,
+                        );
+                    }
+                    await this.setState(`${device.name}.states.speed_antifreeze`, state.val, true);
+                    await this.setState(realid, state.val, true);
+                } else {
+                    return this.log.warn(
+                        `Setting Speed AntiFreeze to ${state.val} for Device ${device.name} was not set because the device is on! Individual fan speeds can only be set while the device is turned off.`,
+                    );
+                    }
             } else if (id.includes('.setSpeed')) {
                 const res = await this.sendHttpRequest(
                     `http://${device.ip}:${device.port}/?speed=${state.val}`,
