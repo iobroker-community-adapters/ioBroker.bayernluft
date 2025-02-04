@@ -69,7 +69,7 @@ class Bayernluft extends utils.Adapter {
             this.log.debug(`Polling data for device: ${device.name}`);
             const exporttxt = await this.GetHttpRequest(`http://${device.ip}:${device.port}/export.txt`, device.name);
             const deviceInfo = await this.GetHttpRequest(
-                `http://${device.ip}:${device.port}/index.html?export=1`,
+                `http://${device.ip}:${device.port}/index.html?export=1&decimal=point`,
                 device.name,
             );
 
