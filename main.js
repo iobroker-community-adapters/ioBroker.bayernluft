@@ -199,9 +199,13 @@ class Bayernluft extends utils.Adapter {
                 this.log.debug(`absoluteHumidityOut: ${deviceInfo.absoluteHumidityOut}`);
                 this.setState(`${device.name}.absoluteHumidityOut`, parseFloat(deviceInfo.absoluteHumidityOut), true);
             }
-            if (deviceInfo.efficiency !== undefined) {
+            if (deviceInfo.efficiency !== undefined) { 
                 this.log.debug(`efficiency: ${deviceInfo.efficiency}`);
-                this.setState(`${device.name}.efficiency`, parseFloat(deviceInfo.efficiency), true);
+                if(deviceInfo.efficiency == "N/A") { //when device is off, query returns  "efficiency":"N/A"
+                    this.setState(`${device.name}.efficiency`, 0, true);
+                } else {
+                    this.setState(`${device.name}.efficiency`, parseFloat(deviceInfo.efficiency), true);
+                }
             }
             if (deviceInfo.humidityTransport !== undefined) {
                 this.log.debug(`humidityTransport: ${deviceInfo.humidityTransport}`);
@@ -264,7 +268,7 @@ class Bayernluft extends utils.Adapter {
             );
             if (id.includes('.setFanSpeedIn')) {
                 const isSystemOnState = await this.getStateAsync(`${device.name}.info.on`);
-                if(isSystemOnState && isSystemOnState.val) {
+                if(isSystemOnState && !isSystemOnState.val) {
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedIn=${state.val}`,
                         device.name,
@@ -282,7 +286,7 @@ class Bayernluft extends utils.Adapter {
                 }
             } else if (id.includes('.setFanSpeedOut')) {
                 const isSystemOnState = await this.getStateAsync(`${device.name}.info.on`);
-                if(isSystemOnState && isSystemOnState.val) {
+                if(isSystemOnState && !isSystemOnState.val) {
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedOut=${state.val}`,
                         device.name,
@@ -300,7 +304,7 @@ class Bayernluft extends utils.Adapter {
                 }
             } else if (id.includes('.setFanSpeedAntiFreeze')) {
                 const isSystemOnState = await this.getStateAsync(`${device.name}.info.on`);
-                if(isSystemOnState && isSystemOnState.val) {                    
+                if(isSystemOnState && !isSystemOnState.val) {                    
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedFrM=${state.val}`,
                         device.name,
