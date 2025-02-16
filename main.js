@@ -30,7 +30,7 @@ class Bayernluft extends utils.Adapter {
             try {
                 const response = await NodeFetch(`http://${device.ip}:${device.port}/`);
                 if (response.ok) {
-                    this.log.info(`Device ${device.name} is reachable.`);
+                    this.log.debug(`Device ${device.name} is reachable.`);
                     
                     this.setState(`${device.name}.info.reachable`, true, true);
                     isAtLeastOneDeviceReachable = true;
@@ -57,7 +57,6 @@ class Bayernluft extends utils.Adapter {
     async onReady() {
         // Reset the connection indicator during startup
         this.setState("info.connection", false, true);
-
         // If no devices are configured, disable the adapter
         if (this.config.devices == null) {
             this.log.error('No devices have been set, disabling adapter!');
