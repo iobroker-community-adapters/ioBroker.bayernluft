@@ -8,9 +8,6 @@ const utils = require('@iobroker/adapter-core');
 const NodeFetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 class Bayernluft extends utils.Adapter {
-    /**
-     * @param [options]
-     */
     constructor(options) {
         super({
             ...options,
@@ -31,7 +28,7 @@ class Bayernluft extends utils.Adapter {
                 const response = await NodeFetch(`http://${device.ip}:${device.port}/`);
                 if (response.ok) {
                     this.log.debug(`Device ${device.name} is reachable.`);
-                    
+
                     this.setState(`${device.name}.info.reachable`, true, true);
                     isAtLeastOneDeviceReachable = true;
                     //connection state set to true if at least one device is reachable
@@ -44,10 +41,10 @@ class Bayernluft extends utils.Adapter {
                 this.setState(`${device.name}.info.reachable`, false, true);
             }
         }
-        if(isAtLeastOneDeviceReachable) {
-            this.setState("info.connection", true, true);
+        if (isAtLeastOneDeviceReachable) {
+            this.setState('info.connection', true, true);
         } else {
-            this.setState("info.connection", false, true);
+            this.setState('info.connection', false, true);
         }
     }
 
@@ -56,14 +53,12 @@ class Bayernluft extends utils.Adapter {
      */
     async onReady() {
         // Reset the connection indicator during startup
-        this.setState("info.connection", false, true);
+        this.setState('info.connection', false, true);
         // If no devices are configured, disable the adapter
         if (this.config.devices == null) {
             this.log.error('No devices have been set, disabling adapter!');
             this.disable();
             return;
-        } else {
-
         }
 
         // Create initial objects for configured devices
@@ -89,8 +84,8 @@ class Bayernluft extends utils.Adapter {
 
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
-     *
-     * @param callback
+      
+     * @param callback Callback function
      */
     async onUnload(callback) {
         try {
@@ -107,24 +102,26 @@ class Bayernluft extends utils.Adapter {
      */
     async queryDevices() {
         for await (const device of this.config.devices) {
-            this.queryDevice(device);        
+            this.queryDevice(device);
         }
     }
 
     /**
      * Query a specific device and update states
+      
+     * @param device The device to query (full device object)
      */
     async queryDevice(device) {
         //skip device if not reachable
         this.log.debug(`Querying data for device: ${device.name}`);
         const isDeviceReachableState = await this.getStateAsync(`${device.name}.info.reachable`);
-        if(isDeviceReachableState && !isDeviceReachableState.val) {
+        if (isDeviceReachableState && !isDeviceReachableState.val) {
             this.log.warn(`Skip polling for device: ${device.name} (not reachable)`);
             return;
         }
         this.setState(`${device.name}.info.reachable`, true, true);
         this.log.debug(`Polling data for device: ${device.name}`);
-        
+
         const deviceInfo = await this.getHttpRequest(
             `http://${device.ip}:${device.port}/index.html?export=iobroker&decimal=point`,
             device.name,
@@ -132,128 +129,140 @@ class Bayernluft extends utils.Adapter {
 
         if (deviceInfo == null) {
             return;
-        } else {
-            this.log.debug(`Response for: ${device.name} - ${JSON.stringify(deviceInfo)}`);
-            if (deviceInfo.date) {
-                this.log.debug(`date: ${deviceInfo.date}`);
-                this.setState(`${device.name}.info.date`, deviceInfo.date, true);
+        }
+        this.log.debug(`Response for: ${device.name} - ${JSON.stringify(deviceInfo)}`);
+        if (deviceInfo.date) {
+            this.log.debug(`date: ${deviceInfo.date}`);
+            this.setState(`${device.name}.info.date`, deviceInfo.date, true);
+        }
+        if (deviceInfo.time) {
+            this.log.debug(`time: ${deviceInfo.time}`);
+            this.setState(`${device.name}.info.time`, deviceInfo.time, true);
+        }
+        if (deviceInfo.deviceName) {
+            this.log.debug(`deviceName: ${deviceInfo.deviceName}`);
+            this.setState(`${device.name}.info.deviceName`, deviceInfo.deviceName, true);
+        }
+        if (deviceInfo.mac) {
+            this.log.debug(`mac: ${deviceInfo.mac}`);
+            this.setState(`${device.name}.info.mac`, deviceInfo.mac, true);
+        }
+        if (deviceInfo.localIP) {
+            this.log.debug(`ip: ${deviceInfo.localIP}`);
+            this.setState(`${device.name}.info.ip`, deviceInfo.localIP, true);
+        }
+        if (deviceInfo.rssi) {
+            this.log.debug(`rssi: ${deviceInfo.rssi}`);
+            this.setState(`${device.name}.info.rssi`, parseInt(deviceInfo.rssi), true);
+        }
+        if (deviceInfo.fwMainController) {
+            this.log.debug(`fwMainController: ${deviceInfo.fwMainController}`);
+            this.setState(`${device.name}.info.fwMainController`, deviceInfo.fwMainController, true);
+        }
+        if (deviceInfo.fwWiFi) {
+            this.log.debug(`fwWiFi: ${deviceInfo.fwWiFi}`);
+            this.setState(`${device.name}.info.fwWiFi`, deviceInfo.fwWiFi, true);
+        }
+        if (deviceInfo.isSystemOn !== undefined) {
+            this.log.debug(`on: ${deviceInfo.isSystemOn == 0 ? false : true}`);
+            this.setState(`${device.name}.info.on`, deviceInfo.isSystemOn == 0 ? false : true, true);
+        }
+        if (deviceInfo.temperatureIn !== undefined) {
+            this.log.debug(`temperatureIn: ${deviceInfo.temperatureIn}`);
+            this.setState(`${device.name}.temperatureIn`, parseFloat(deviceInfo.temperatureIn), true);
+        }
+        if (deviceInfo.temperatureOut !== undefined) {
+            this.log.debug(`temperatureOut: ${deviceInfo.temperatureOut}`);
+            this.setState(`${device.name}.temperatureOut`, parseFloat(deviceInfo.temperatureOut), true);
+        }
+        if (deviceInfo.temperatureFresh !== undefined) {
+            this.log.debug(`temperatureFresh: ${deviceInfo.temperatureFresh}`);
+            this.setState(`${device.name}.temperatureFresh`, parseFloat(deviceInfo.temperatureFresh), true);
+        }
+        if (deviceInfo.relativeHumidityIn !== undefined) {
+            this.log.debug(`relativeHumidityIn: ${deviceInfo.relativeHumidityIn}`);
+            this.setState(`${device.name}.relativeHumidityIn`, parseFloat(deviceInfo.relativeHumidityIn), true);
+        }
+        if (deviceInfo.relativeHumidityOut !== undefined) {
+            this.log.debug(`relativeHumidityOut: ${deviceInfo.relativeHumidityOut}`);
+            this.setState(`${device.name}.relativeHumidityOut`, parseFloat(deviceInfo.relativeHumidityOut), true);
+        }
+        if (deviceInfo.absoluteHumidityIn !== undefined) {
+            this.log.debug(`absoluteHumidityIn: ${deviceInfo.absoluteHumidityIn}`);
+            this.setState(`${device.name}.absoluteHumidityIn`, parseFloat(deviceInfo.absoluteHumidityIn), true);
+        }
+        if (deviceInfo.absoluteHumidityOut !== undefined) {
+            this.log.debug(`absoluteHumidityOut: ${deviceInfo.absoluteHumidityOut}`);
+            this.setState(`${device.name}.absoluteHumidityOut`, parseFloat(deviceInfo.absoluteHumidityOut), true);
+        }
+        if (deviceInfo.efficiency !== undefined) {
+            this.log.debug(`efficiency: ${deviceInfo.efficiency}`);
+            if (deviceInfo.efficiency == 'N/A') {
+                //when device is off, query returns  'efficiency':'N/A'
+                this.setState(`${device.name}.efficiency`, 0, true);
+            } else {
+                this.setState(`${device.name}.efficiency`, parseFloat(deviceInfo.efficiency), true);
             }
-            if (deviceInfo.time) {
-                this.log.debug(`time: ${deviceInfo.time}`);
-                this.setState(`${device.name}.info.time`, deviceInfo.time, true);
-            }
-            if (deviceInfo.deviceName) {
-                this.log.debug(`deviceName: ${deviceInfo.deviceName}`);
-                this.setState(`${device.name}.info.deviceName`, deviceInfo.deviceName, true);
-            }
-            if (deviceInfo.mac) {
-                this.log.debug(`mac: ${deviceInfo.mac}`);
-                this.setState(`${device.name}.info.mac`, deviceInfo.mac, true);
-            }
-            if (deviceInfo.localIP) {
-                this.log.debug(`ip: ${deviceInfo.localIP}`);
-                this.setState(`${device.name}.info.ip`, deviceInfo.localIP, true);
-            }
-            if (deviceInfo.rssi) {
-                this.log.debug(`rssi: ${deviceInfo.rssi}`);
-                this.setState(`${device.name}.info.rssi`, parseInt(deviceInfo.rssi), true);
-            }
-            if (deviceInfo.fwMainController) {
-                this.log.debug(`fwMainController: ${deviceInfo.fwMainController}`);
-                this.setState(`${device.name}.info.fwMainController`, deviceInfo.fwMainController, true);
-            }
-            if (deviceInfo.fwWiFi) {
-                this.log.debug(`fwWiFi: ${deviceInfo.fwWiFi}`);
-                this.setState(`${device.name}.info.fwWiFi`, deviceInfo.fwWiFi, true);
-            }
-            if (deviceInfo.isSystemOn !== undefined) {
-                this.log.debug(`on: ${deviceInfo.isSystemOn == 0 ? false : true}`);
-                this.setState(`${device.name}.info.on`, deviceInfo.isSystemOn == 0 ? false : true, true);
-            }
-            if (deviceInfo.temperatureIn !== undefined) {
-                this.log.debug(`temperatureIn: ${deviceInfo.temperatureIn}`);
-                this.setState(`${device.name}.temperatureIn`, parseFloat(deviceInfo.temperatureIn), true);
-            }
-            if (deviceInfo.temperatureOut !== undefined) {
-                this.log.debug(`temperatureOut: ${deviceInfo.temperatureOut}`);
-                this.setState(`${device.name}.temperatureOut`, parseFloat(deviceInfo.temperatureOut), true);
-            }
-            if (deviceInfo.temperatureFresh !== undefined) {
-                this.log.debug(`temperatureFresh: ${deviceInfo.temperatureFresh}`);
-                this.setState(`${device.name}.temperatureFresh`, parseFloat(deviceInfo.temperatureFresh), true);
-            }
-            if (deviceInfo.relativeHumidityIn !== undefined) {
-                this.log.debug(`relativeHumidityIn: ${deviceInfo.relativeHumidityIn}`);
-                this.setState(`${device.name}.relativeHumidityIn`, parseFloat(deviceInfo.relativeHumidityIn), true);
-            }
-            if (deviceInfo.relativeHumidityOut !== undefined) {
-                this.log.debug(`relativeHumidityOut: ${deviceInfo.relativeHumidityOut}`);
-                this.setState(`${device.name}.relativeHumidityOut`, parseFloat(deviceInfo.relativeHumidityOut), true);
-            }
-            if (deviceInfo.absoluteHumidityIn !== undefined) {
-                this.log.debug(`absoluteHumidityIn: ${deviceInfo.absoluteHumidityIn}`);
-                this.setState(`${device.name}.absoluteHumidityIn`, parseFloat(deviceInfo.absoluteHumidityIn), true);
-            }
-            if (deviceInfo.absoluteHumidityOut !== undefined) {
-                this.log.debug(`absoluteHumidityOut: ${deviceInfo.absoluteHumidityOut}`);
-                this.setState(`${device.name}.absoluteHumidityOut`, parseFloat(deviceInfo.absoluteHumidityOut), true);
-            }
-            if (deviceInfo.efficiency !== undefined) { 
-                this.log.debug(`efficiency: ${deviceInfo.efficiency}`);
-                if(deviceInfo.efficiency == "N/A") { //when device is off, query returns  "efficiency":"N/A"
-                    this.setState(`${device.name}.efficiency`, 0, true);
-                } else {
-                    this.setState(`${device.name}.efficiency`, parseFloat(deviceInfo.efficiency), true);
-                }
-            }
-            if (deviceInfo.humidityTransport !== undefined) {
-                this.log.debug(`humidityTransport: ${deviceInfo.humidityTransport}`);
-                this.setState(`${device.name}.humidityTransport`, parseInt(deviceInfo.humidityTransport), true);
-            }
-            if (deviceInfo.fanSpeedIn !== undefined) {
-                this.log.debug(`fanSpeedIn: ${deviceInfo.fanSpeedIn}`);
-                this.setState(`${device.name}.fanSpeedIn`, parseInt(deviceInfo.fanSpeedIn), true);
-            }
-            if (deviceInfo.fanSpeedOut !== undefined) {
-                this.log.debug(`fanSpeedOut: ${deviceInfo.fanSpeedOut}`);
-                this.setState(`${device.name}.fanSpeedOut`, parseInt(deviceInfo.fanSpeedOut), true);
-            }
-            if (deviceInfo.fanSpeedAntiFreeze !== undefined) {
-                this.log.debug(`fanSpeedAntiFreeze: ${deviceInfo.fanSpeedAntiFreeze}`);
-                this.setState(`${device.name}.fanSpeedAntiFreeze`, parseInt(deviceInfo.fanSpeedAntiFreeze), true);
-            }
-            if (deviceInfo.isAntiFreezeActive !== undefined) {
-                this.log.debug(`isAntiFreezeActive: ${deviceInfo.isAntiFreezeActive == 0 ? false : true}`);
-                this.setState(`${device.name}.isAntiFreezeActive`, deviceInfo.isAntiFreezeActive == 0 ? false : true, true);
-            }
-            if (deviceInfo.isFixedSpeedActive !== undefined) {
-                this.log.debug(`isFixedSpeedActive: ${deviceInfo.isFixedSpeedActive == 0 ? false : true}`);
-                this.setState(`${device.name}.isFixedSpeedActive`, deviceInfo.isFixedSpeedActive == 0 ? false : true, true);
-            }
-            if (deviceInfo.isDefrostModeActive !== undefined) {
-                this.log.debug(`isDefrostModeActive: ${deviceInfo.isDefrostModeActive == 0 ? false : true}`);
-                this.setState(`${device.name}.isDefrostModeActive`, deviceInfo.isDefrostModeActive == 0 ? false : true, true);
-            }
-            if (deviceInfo.isLandlordModeActive !== undefined) {
-                this.log.debug(`isLandlordModeActive: ${deviceInfo.isLandlordModeActive == 0 ? false : true}`);
-                this.setState(`${device.name}.isLandlordModeActive`, deviceInfo.isLandlordModeActive == 0 ? false : true, true);
-            }
-            if (deviceInfo.isCrossVentilationActive !== undefined) {
-                this.log.debug(`isCrossVentilationActive: ${deviceInfo.isCrossVentilationActive == 0 ? false : true}`);
-                this.setState(`${device.name}.isCrossVentilationActive`, deviceInfo.isCrossVentilationActive == 0 ? false : true, true);
-            }
-            if (deviceInfo.isTimerActive !== undefined) { //TODO: test the Timer
-                this.log.debug(`isTimerActive: ${deviceInfo.isTimerActive == 0 ? false : true}`);
-                this.setState(`${device.name}.isTimerActive`, deviceInfo.isTimerActive == 0 ? false : true, true);
-            }
+        }
+        if (deviceInfo.humidityTransport !== undefined) {
+            this.log.debug(`humidityTransport: ${deviceInfo.humidityTransport}`);
+            this.setState(`${device.name}.humidityTransport`, parseInt(deviceInfo.humidityTransport), true);
+        }
+        if (deviceInfo.fanSpeedIn !== undefined) {
+            this.log.debug(`fanSpeedIn: ${deviceInfo.fanSpeedIn}`);
+            this.setState(`${device.name}.fanSpeedIn`, parseInt(deviceInfo.fanSpeedIn), true);
+        }
+        if (deviceInfo.fanSpeedOut !== undefined) {
+            this.log.debug(`fanSpeedOut: ${deviceInfo.fanSpeedOut}`);
+            this.setState(`${device.name}.fanSpeedOut`, parseInt(deviceInfo.fanSpeedOut), true);
+        }
+        if (deviceInfo.fanSpeedAntiFreeze !== undefined) {
+            this.log.debug(`fanSpeedAntiFreeze: ${deviceInfo.fanSpeedAntiFreeze}`);
+            this.setState(`${device.name}.fanSpeedAntiFreeze`, parseInt(deviceInfo.fanSpeedAntiFreeze), true);
+        }
+        if (deviceInfo.isAntiFreezeActive !== undefined) {
+            this.log.debug(`isAntiFreezeActive: ${deviceInfo.isAntiFreezeActive == 0 ? false : true}`);
+            this.setState(`${device.name}.isAntiFreezeActive`, deviceInfo.isAntiFreezeActive == 0 ? false : true, true);
+        }
+        if (deviceInfo.isFixedSpeedActive !== undefined) {
+            this.log.debug(`isFixedSpeedActive: ${deviceInfo.isFixedSpeedActive == 0 ? false : true}`);
+            this.setState(`${device.name}.isFixedSpeedActive`, deviceInfo.isFixedSpeedActive == 0 ? false : true, true);
+        }
+        if (deviceInfo.isDefrostModeActive !== undefined) {
+            this.log.debug(`isDefrostModeActive: ${deviceInfo.isDefrostModeActive == 0 ? false : true}`);
+            this.setState(
+                `${device.name}.isDefrostModeActive`,
+                deviceInfo.isDefrostModeActive == 0 ? false : true,
+                true,
+            );
+        }
+        if (deviceInfo.isLandlordModeActive !== undefined) {
+            this.log.debug(`isLandlordModeActive: ${deviceInfo.isLandlordModeActive == 0 ? false : true}`);
+            this.setState(
+                `${device.name}.isLandlordModeActive`,
+                deviceInfo.isLandlordModeActive == 0 ? false : true,
+                true,
+            );
+        }
+        if (deviceInfo.isCrossVentilationActive !== undefined) {
+            this.log.debug(`isCrossVentilationActive: ${deviceInfo.isCrossVentilationActive == 0 ? false : true}`);
+            this.setState(
+                `${device.name}.isCrossVentilationActive`,
+                deviceInfo.isCrossVentilationActive == 0 ? false : true,
+                true,
+            );
+        }
+        if (deviceInfo.isTimerActive !== undefined) {
+            this.log.debug(`isTimerActive: ${deviceInfo.isTimerActive == 0 ? false : true}`);
+            this.setState(`${device.name}.isTimerActive`, deviceInfo.isTimerActive == 0 ? false : true, true);
         }
     }
 
     /**
      * Is called if a subscribed state changes
-     *
-     * @param id
-     * @param state
+      
+     * @param id State ID that changed
+     * @param state State object with the new state
      */
     async onStateChange(id, state) {
         this.log.debug(`onStateChange: id: ${id} Value ${state.val} ACK ${state.ack}`);
@@ -267,7 +276,7 @@ class Bayernluft extends utils.Adapter {
             );
             if (id.includes('.setFanSpeedIn')) {
                 const isSystemOnState = await this.getStateAsync(`${device.name}.info.on`);
-                if(isSystemOnState && !isSystemOnState.val) {
+                if (isSystemOnState && !isSystemOnState.val) {
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedIn=${state.val}`,
                         device.name,
@@ -285,7 +294,7 @@ class Bayernluft extends utils.Adapter {
                 }
             } else if (id.includes('.setFanSpeedOut')) {
                 const isSystemOnState = await this.getStateAsync(`${device.name}.info.on`);
-                if(isSystemOnState && !isSystemOnState.val) {
+                if (isSystemOnState && !isSystemOnState.val) {
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedOut=${state.val}`,
                         device.name,
@@ -303,7 +312,7 @@ class Bayernluft extends utils.Adapter {
                 }
             } else if (id.includes('.setFanSpeedAntiFreeze')) {
                 const isSystemOnState = await this.getStateAsync(`${device.name}.info.on`);
-                if(isSystemOnState && !isSystemOnState.val) {                    
+                if (isSystemOnState && !isSystemOnState.val) {
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedFrM=${state.val}`,
                         device.name,
@@ -318,7 +327,7 @@ class Bayernluft extends utils.Adapter {
                     return this.log.warn(
                         `Setting fan speed AntiFreeze to ${state.val} for Device ${device.name} was not set because the device is on! Individual fan speeds can only be set while the device is turned off.`,
                     );
-                    }
+                }
             } else if (id.includes('.setFanSpeed')) {
                 const res = await this.sendHttpRequest(
                     `http://${device.ip}:${device.port}/?speed=${state.val}`,
@@ -400,669 +409,792 @@ class Bayernluft extends utils.Adapter {
 
     /**
      * Create initial device objects, e.g. if device is reachable
-    */
+     */
     async createInitialDeviceObjects() {
-
         for await (const device of this.config.devices) {
-            
             //Create Device
-            this.extendObject(device.name, {
-                type: 'device',
-                common: {
-                    name: `${device.name}`
+            this.extendObject(
+                device.name,
+                {
+                    type: 'device',
+                    common: {
+                        name: `${device.name}`,
+                    },
+                    native: {},
                 },
-                native: {}
-            }, { preserve: { common: ['name'] } } );
+                { preserve: { common: ['name'] } },
+            );
 
             // Create channels
-            await this.extendObject(`${device.name}.info`, {
-                type: "channel",
-                common: {
-                    name: "Information",
+            await this.extendObject(
+                `${device.name}.info`,
+                {
+                    type: 'channel',
+                    common: {
+                        name: 'Information',
+                    },
+                    native: {},
                 },
-                native: {}
-            }, { preserve: { common: ['name'] } } );
+                { preserve: { common: ['name'] } },
+            );
 
             // Create reachable indicator
-            await this.extendObject(`${device.name}.info.reachable`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.reachable`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Gerät ist erreichbar",
-                        en: "Device is reachable",
+                        name: {
+                            de: 'Gerät ist erreichbar',
+                            en: 'Device is reachable',
+                        },
+                        type: 'boolean',
+                        role: 'indicator.reachable',
+                        read: true,
+                        write: false,
                     },
-                    type: "boolean",
-                    role: "indicator.reachable",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
         }
     }
 
     /**
      * Create device specific objects
-    */
+     */
     async createDeviceObjects() {
-
         for await (const device of this.config.devices) {
             //skip device if not reachable
             const isDeviceReachableState = await this.getStateAsync(`${device.name}.info.reachable`);
-            if(isDeviceReachableState && !isDeviceReachableState.val) {
+            if (isDeviceReachableState && !isDeviceReachableState.val) {
                 this.log.debug(`Skip creating device objects for device: ${device.name} (not reachable)`);
                 continue;
             }
             // Create channels
-            await this.extendObject(`${device.name}.commands`, {
-                type: "channel",
-                common: {
-                    name: "Commands",
+            await this.extendObject(
+                `${device.name}.commands`,
+                {
+                    type: 'channel',
+                    common: {
+                        name: 'Commands',
+                    },
+                    native: {},
                 },
-                native: {}
-                }, { preserve: { common: ['name'] } } );
+                { preserve: { common: ['name'] } },
+            );
 
             // Create Objects
-            await this.extendObject(`${device.name}.info.date`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.date`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Datum des Geräts",
-                        en: "Date of the device",
+                        name: {
+                            de: 'Datum des Geräts',
+                            en: 'Date of the device',
+                        },
+                        type: 'string',
+                        role: 'date',
+                        read: true,
+                        write: false,
                     },
-                    type: "string",
-                    role: "date",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.info.time`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.time`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Zeit des Geräts",
-                        en: "Time of the device",
+                        name: {
+                            de: 'Zeit des Geräts',
+                            en: 'Time of the device',
+                        },
+                        type: 'string',
+                        role: 'time',
+                        read: true,
+                        write: false,
                     },
-                    type: "string",
-                    role: "time",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.info.deviceName`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.deviceName`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Name des Geräts",
-                        en: "Name of the device",
+                        name: {
+                            de: 'Name des Geräts',
+                            en: 'Name of the device',
+                        },
+                        type: 'string',
+                        role: 'info.name',
+                        read: true,
+                        write: false,
                     },
-                    type: "string",
-                    role: "info.name",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.info.mac`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.mac`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "MAC-Addresse des Geräts",
-                        en: "MAC address of the device",
+                        name: {
+                            de: 'MAC-Addresse des Geräts',
+                            en: 'MAC address of the device',
+                        },
+                        type: 'string',
+                        role: 'info.mac',
+                        read: true,
+                        write: false,
                     },
-                    type: "string",
-                    role: "info.mac",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.info.ip`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.ip`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "IP-Addresse des Geräts",
-                        en: "IP address of the device",
+                        name: {
+                            de: 'IP-Addresse des Geräts',
+                            en: 'IP address of the device',
+                        },
+                        type: 'string',
+                        role: 'info.ip',
+                        read: true,
+                        write: false,
                     },
-                    type: "string",
-                    role: "info.ip",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.info.rssi`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.rssi`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Received Signal Strength Indication in dBm",
-                        en: "Received Signal Strength Indication in dBm",
+                        name: {
+                            de: 'Received Signal Strength Indication in dBm',
+                            en: 'Received Signal Strength Indication in dBm',
+                        },
+                        type: 'number',
+                        role: 'value',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.info.fwMainController`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.fwMainController`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Firmware Version des Hauptcontrollers",
-                        en: "Firmware Version of the main controller",
+                        name: {
+                            de: 'Firmware Version des Hauptcontrollers',
+                            en: 'Firmware Version of the main controller',
+                        },
+                        type: 'string',
+                        role: 'info.firmware',
+                        read: true,
+                        write: false,
                     },
-                    type: "string",
-                    role: "info.firmware",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.info.fwWiFi`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.fwWiFi`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Firmware Version des WLAN Moduls",
-                        en: "Firmware Version of the wifi controller",
+                        name: {
+                            de: 'Firmware Version des WLAN Moduls',
+                            en: 'Firmware Version of the wifi controller',
+                        },
+                        type: 'string',
+                        role: 'info.firmware',
+                        read: true,
+                        write: false,
                     },
-                    type: "string",
-                    role: "info.firmware",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
-            );
-            
-            await this.extendObject(`${device.name}.info.on`, {
-                    type: "state",
-                    common: {
-                    name: {
-                        de: "Gerät eingeschaltet",
-                        en: "Device turned on",
-                    },
-                    type: "boolean",
-                    role: "indicator",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
-            );
-            
-            await this.extendObject(`${device.name}.temperatureIn`, {
-                    type: "state",
-                    common: {
-                    name: {
-                        de: "Temperatur der Zuluft",
-                        en: "Temperature of the supply air",
-                    },
-                    type: "number",
-                    role: "value.temperature",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.temperatureOut`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.info.on`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Temperatur der Abluft",
-                        en: "Temperature of the exhaust air",
+                        name: {
+                            de: 'Gerät eingeschaltet',
+                            en: 'Device turned on',
+                        },
+                        type: 'boolean',
+                        role: 'indicator',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value.temperature",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.temperatureFresh`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.temperatureIn`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Temperatur der Frischluft",
-                        en: "Temperature of the fresh air",
+                        name: {
+                            de: 'Temperatur der Zuluft',
+                            en: 'Temperature of the supply air',
+                        },
+                        type: 'number',
+                        role: 'value.temperature',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value.temperature",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.relativeHumidityIn`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.temperatureOut`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Relative Luftfeuchtigkeit der Zuluft",
-                        en: "Relative humidity of the supply air",
+                        name: {
+                            de: 'Temperatur der Abluft',
+                            en: 'Temperature of the exhaust air',
+                        },
+                        type: 'number',
+                        role: 'value.temperature',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value.humidity",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.relativeHumidityOut`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.temperatureFresh`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Relative Luftfeuchtigkeit der Abluft",
-                        en: "Relative humidity of the exhaust air",
+                        name: {
+                            de: 'Temperatur der Frischluft',
+                            en: 'Temperature of the fresh air',
+                        },
+                        type: 'number',
+                        role: 'value.temperature',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value.humidity",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.absoluteHumidityIn`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.relativeHumidityIn`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Absolute Luftfeuchtigkeit der Zuluft",
-                        en: "Absolute humidity of the supply air",
+                        name: {
+                            de: 'Relative Luftfeuchtigkeit der Zuluft',
+                            en: 'Relative humidity of the supply air',
+                        },
+                        type: 'number',
+                        role: 'value.humidity',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value.humidity",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.absoluteHumidityOut`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.relativeHumidityOut`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Absolute Luftfeuchtigkeit der Abluft",
-                        en: "Absolute humidity of the exhaust air",
+                        name: {
+                            de: 'Relative Luftfeuchtigkeit der Abluft',
+                            en: 'Relative humidity of the exhaust air',
+                        },
+                        type: 'number',
+                        role: 'value.humidity',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value.humidity",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.efficiency`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.absoluteHumidityIn`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Effizienz der Wärmerückgewinnung in Prozent",
-                        en: "Efficiency of the heat recovery in percent",
+                        name: {
+                            de: 'Absolute Luftfeuchtigkeit der Zuluft',
+                            en: 'Absolute humidity of the supply air',
+                        },
+                        type: 'number',
+                        role: 'value.humidity',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.humidityTransport`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.absoluteHumidityOut`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Feuchtigkeitstransport in g/24h",
-                        en: "Humidity transport in g/24h",
+                        name: {
+                            de: 'Absolute Luftfeuchtigkeit der Abluft',
+                            en: 'Absolute humidity of the exhaust air',
+                        },
+                        type: 'number',
+                        role: 'value.humidity',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "value",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.fanSpeedIn`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.efficiency`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Geschwindigkeit des Zuluftventilators",
-                        en: "Speed of the supply air fan",
+                        name: {
+                            de: 'Effizienz der Wärmerückgewinnung in Prozent',
+                            en: 'Efficiency of the heat recovery in percent',
+                        },
+                        type: 'number',
+                        role: 'value',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "level.speed",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
-            
-            await this.extendObject(`${device.name}.fanSpeedOut`, {
-                    type: "state",
+
+            await this.extendObject(
+                `${device.name}.humidityTransport`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Geschwindigkeit des Abluftventilators",
-                        en: "Speed of the exhaust air fan",
+                        name: {
+                            de: 'Feuchtigkeitstransport in g/24h',
+                            en: 'Humidity transport in g/24h',
+                        },
+                        type: 'number',
+                        role: 'value',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "level.speed",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
-            
-            await this.extendObject(`${device.name}.fanSpeedAntiFreeze`, {
-                    type: "state",
+
+            await this.extendObject(
+                `${device.name}.fanSpeedIn`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Geschwindigkeit des Frostschutzventilators",
-                        en: "Speed of the antifreeze fan",
+                        name: {
+                            de: 'Geschwindigkeit des Zuluftventilators',
+                            en: 'Speed of the supply air fan',
+                        },
+                        type: 'number',
+                        role: 'level.speed',
+                        read: true,
+                        write: false,
                     },
-                    type: "number",
-                    role: "level.speed",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
-            
-            await this.extendObject(`${device.name}.isAntiFreezeActive`, {
-                    type: "state",
+
+            await this.extendObject(
+                `${device.name}.fanSpeedOut`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Frostschutz ist aktiviert",
-                        en: "Antifreeze is active",
+                        name: {
+                            de: 'Geschwindigkeit des Abluftventilators',
+                            en: 'Speed of the exhaust air fan',
+                        },
+                        type: 'number',
+                        role: 'level.speed',
+                        read: true,
+                        write: false,
                     },
-                    type: "boolean",
-                    role: "indicator",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
-            
-            await this.extendObject(`${device.name}.isFixedSpeedActive`, {
-                    type: "state",
+
+            await this.extendObject(
+                `${device.name}.fanSpeedAntiFreeze`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Fixed Speed ist aktiviert",
-                        en: "Fixed speed is active",
+                        name: {
+                            de: 'Geschwindigkeit des Frostschutzventilators',
+                            en: 'Speed of the antifreeze fan',
+                        },
+                        type: 'number',
+                        role: 'level.speed',
+                        read: true,
+                        write: false,
                     },
-                    type: "boolean",
-                    role: "indicator",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
-            
-            await this.extendObject(`${device.name}.isDefrostModeActive`, {
-                    type: "state",
+
+            await this.extendObject(
+                `${device.name}.isAntiFreezeActive`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Abtaumodus ist aktiviert",
-                        en: "Defrost mode is active",
+                        name: {
+                            de: 'Frostschutz ist aktiviert',
+                            en: 'Antifreeze is active',
+                        },
+                        type: 'boolean',
+                        role: 'indicator',
+                        read: true,
+                        write: false,
                     },
-                    type: "boolean",
-                    role: "indicator",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
-            
-            await this.extendObject(`${device.name}.isLandlordModeActive`, {
-                    type: "state",
+
+            await this.extendObject(
+                `${device.name}.isFixedSpeedActive`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Vermietermodus ist aktiviert",
-                        en: "Landlord mode is active",
+                        name: {
+                            de: 'Fixed Speed ist aktiviert',
+                            en: 'Fixed speed is active',
+                        },
+                        type: 'boolean',
+                        role: 'indicator',
+                        read: true,
+                        write: false,
                     },
-                    type: "boolean",
-                    role: "indicator",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
-            
-            await this.extendObject(`${device.name}.isCrossVentilationActive`, {
-                    type: "state",
+
+            await this.extendObject(
+                `${device.name}.isDefrostModeActive`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Querlüftungsmodus ist aktiviert",
-                        en: "Cross ventilation mode is active",
+                        name: {
+                            de: 'Abtaumodus ist aktiviert',
+                            en: 'Defrost mode is active',
+                        },
+                        type: 'boolean',
+                        role: 'indicator',
+                        read: true,
+                        write: false,
                     },
-                    type: "boolean",
-                    role: "indicator",
-                    read: true,
-                    write: false,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
-            
-            await this.extendObject(`${device.name}.isTimerActive`, {
-                    type: "state",
+
+            await this.extendObject(
+                `${device.name}.isLandlordModeActive`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Timer ist aktiviert",
-                        en: "Timer is active",
+                        name: {
+                            de: 'Vermietermodus ist aktiviert',
+                            en: 'Landlord mode is active',
+                        },
+                        type: 'boolean',
+                        role: 'indicator',
+                        read: true,
+                        write: false,
                     },
-                    type: "boolean",
-                    role: "indicator",
-                    read: true,
-                    write: false,
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
+            );
+
+            await this.extendObject(
+                `${device.name}.isCrossVentilationActive`,
+                {
+                    type: 'state',
+                    common: {
+                        name: {
+                            de: 'Querlüftungsmodus ist aktiviert',
+                            en: 'Cross ventilation mode is active',
+                        },
+                        type: 'boolean',
+                        role: 'indicator',
+                        read: true,
+                        write: false,
                     },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
+            );
+
+            await this.extendObject(
+                `${device.name}.isTimerActive`,
+                {
+                    type: 'state',
+                    common: {
+                        name: {
+                            de: 'Timer ist aktiviert',
+                            en: 'Timer is active',
+                        },
+                        type: 'boolean',
+                        role: 'indicator',
+                        read: true,
+                        write: false,
+                    },
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
             //Create commands
-            await this.extendObject(`${device.name}.commands.setFanSpeed`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.commands.setFanSpeed`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Setze Geschwindigkeit des Zu- und Abluftventilators (0-10)",
-                        en: "Set speed of supply and exhaust air fan (0-10)",
+                        name: {
+                            de: 'Setze Geschwindigkeit des Zu- und Abluftventilators (0-10)',
+                            en: 'Set speed of supply and exhaust air fan (0-10)',
+                        },
+                        type: 'number',
+                        role: 'level.speed',
+                        read: true,
+                        write: true,
+                        min: 0,
+                        max: 10,
                     },
-                    type: "number",
-                    role: "level.speed",
-                    read: true,
-                    write: true,
-                    min: 0,
-                    max: 10,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
-            );
-            
-            await this.extendObject(`${device.name}.commands.setFanSpeedIn`, {
-                    type: "state",
-                    common: {
-                    name: {
-                        de: "Setze Geschwindigkeit des Zuluftventilators (0-10) - Nur bei ausgeschaltetem Gerät",
-                        en: "Set speed of supply air fan (0-10) - only when device is turned off",
-                    },
-                    type: "number",
-                    role: "level.speed",
-                    read: true,
-                    write: true,
-                    min: 0,
-                    max: 10,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
-            );
-            
-            await this.extendObject(`${device.name}.commands.setFanSpeedOut`, {
-                    type: "state",
-                    common: {
-                    name: {
-                        de: "Setze Geschwindigkeit des Abluftventilators (0-10) - Nur bei ausgeschaltetem Gerät",
-                        en: "Set speed of exhaust air fan (0-10) - only when device is turned off",
-                    },
-                    type: "number",
-                    role: "level.speed",
-                    read: true,
-                    write: true,
-                    min: 0,
-                    max: 10,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
-            );
-            
-            await this.extendObject(`${device.name}.commands.setFanSpeedAntiFreeze`, {
-                    type: "state",
-                    common: {
-                    name: {
-                        de: "Setze Geschwindigkeit des Frostschutzventilators (0-50) - Nur bei ausgeschaltetem Gerät",
-                        en: "Set speed of antifreeze fan (0-50) - only when device is turned off",
-                    },
-                    type: "number",
-                    role: "level.speed",
-                    read: true,
-                    write: true,
-                    min: 0,
-                    max: 50,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.commands.powerOn`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.commands.setFanSpeedIn`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Gerät einschalten",
-                        en: "Turn on device",
+                        name: {
+                            de: 'Setze Geschwindigkeit des Zuluftventilators (0-10) - Nur bei ausgeschaltetem Gerät',
+                            en: 'Set speed of supply air fan (0-10) - only when device is turned off',
+                        },
+                        type: 'number',
+                        role: 'level.speed',
+                        read: true,
+                        write: true,
+                        min: 0,
+                        max: 10,
                     },
-                    type: "boolean",
-                    role: "button",
-                    read: false,
-                    write: true,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.commands.powerOff`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.commands.setFanSpeedOut`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Gerät ausschalten",
-                        en: "Turn off device",
+                        name: {
+                            de: 'Setze Geschwindigkeit des Abluftventilators (0-10) - Nur bei ausgeschaltetem Gerät',
+                            en: 'Set speed of exhaust air fan (0-10) - only when device is turned off',
+                        },
+                        type: 'number',
+                        role: 'level.speed',
+                        read: true,
+                        write: true,
+                        min: 0,
+                        max: 10,
                     },
-                    type: "boolean",
-                    role: "button",
-                    read: false,
-                    write: true,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.commands.togglePower`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.commands.setFanSpeedAntiFreeze`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Gerät ein-/ausschalten",
-                        en: "Turn on/off device",
+                        name: {
+                            de: 'Setze Geschwindigkeit des Frostschutzventilators (0-50) - Nur bei ausgeschaltetem Gerät',
+                            en: 'Set speed of antifreeze fan (0-50) - only when device is turned off',
+                        },
+                        type: 'number',
+                        role: 'level.speed',
+                        read: true,
+                        write: true,
+                        min: 0,
+                        max: 50,
                     },
-                    type: "boolean",
-                    role: "button",
-                    read: false,
-                    write: true,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.commands.autoMode`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.commands.powerOn`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Aktiviere Automatikmodus",
-                        en: "Activate automatic mode",
+                        name: {
+                            de: 'Gerät einschalten',
+                            en: 'Turn on device',
+                        },
+                        type: 'boolean',
+                        role: 'button',
+                        read: false,
+                        write: true,
                     },
-                    type: "boolean",
-                    role: "button",
-                    read: false,
-                    write: true,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.commands.timer`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.commands.powerOff`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Aktiviere Timer",
-                        en: "Activate timer",
+                        name: {
+                            de: 'Gerät ausschalten',
+                            en: 'Turn off device',
+                        },
+                        type: 'boolean',
+                        role: 'button',
+                        read: false,
+                        write: true,
                     },
-                    type: "boolean",
-                    role: "button",
-                    read: false,
-                    write: true,
-                    },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
-            await this.extendObject(`${device.name}.commands.syncTime`, {
-                    type: "state",
+            await this.extendObject(
+                `${device.name}.commands.togglePower`,
+                {
+                    type: 'state',
                     common: {
-                    name: {
-                        de: "Synchronisiere Datum und Uhrzeit des Geräts vom Zeitserver",
-                        en: "Synchronize date and time of the device from the time server",
+                        name: {
+                            de: 'Gerät ein-/ausschalten',
+                            en: 'Turn on/off device',
+                        },
+                        type: 'boolean',
+                        role: 'button',
+                        read: false,
+                        write: true,
                     },
-                    type: "boolean",
-                    role: "button",
-                    read: false,
-                    write: true,
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
+            );
+
+            await this.extendObject(
+                `${device.name}.commands.autoMode`,
+                {
+                    type: 'state',
+                    common: {
+                        name: {
+                            de: 'Aktiviere Automatikmodus',
+                            en: 'Activate automatic mode',
+                        },
+                        type: 'boolean',
+                        role: 'button',
+                        read: false,
+                        write: true,
                     },
-                    native: {}
-                }, { preserve: { common: ['name'] } }
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
+            );
+
+            await this.extendObject(
+                `${device.name}.commands.timer`,
+                {
+                    type: 'state',
+                    common: {
+                        name: {
+                            de: 'Aktiviere Timer',
+                            en: 'Activate timer',
+                        },
+                        type: 'boolean',
+                        role: 'button',
+                        read: false,
+                        write: true,
+                    },
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
+            );
+
+            await this.extendObject(
+                `${device.name}.commands.syncTime`,
+                {
+                    type: 'state',
+                    common: {
+                        name: {
+                            de: 'Synchronisiere Datum und Uhrzeit des Geräts vom Zeitserver',
+                            en: 'Synchronize date and time of the device from the time server',
+                        },
+                        type: 'boolean',
+                        role: 'button',
+                        read: false,
+                        write: true,
+                    },
+                    native: {},
+                },
+                { preserve: { common: ['name'] } },
             );
 
             this.subscribeStates(`${device.name}.commands.*`);
@@ -1079,7 +1211,6 @@ class Bayernluft extends utils.Adapter {
         try {
             response = await NodeFetch(url);
         } catch (error) {
-            
             this.setState(`${deviceName}.info.reachable`, false, true);
             if (error.code == 'ETIMEDOUT') {
                 this.log.warn(
@@ -1151,9 +1282,6 @@ class Bayernluft extends utils.Adapter {
 
 if (require.main !== module) {
     // Export the constructor in compact mode
-    /**
-     * @param [options]
-     */
     module.exports = options => new Bayernluft(options);
 } else {
     // otherwise start the instance directly
