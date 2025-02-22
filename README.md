@@ -35,14 +35,17 @@ Also a big thanks to the company Bayernluft for their great support
 <!--
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
-    * (boriswerner) **Breaking Change:** All states from the 2.alpha versions or version 1 of the adapter were removed and the adapter more or less completely redesigned. The Bayernlüfter devices need a new export configuration file. Please upload export_iobroker.txt to each of your devices!
-    * (boriswerner) implemented commands for individual fan speeds (see  WS32240427 in https://www.bayernluft.de/de/wlan32_changelist.html):
-        When device is turned off, the fans can be set indivudually (commands: setSpeedIn, setSpeedOut, setSpeedAntiFreeze)
-    * (boriswerner) changed states in "states"-folder to read-only
-    * (boriswerner) changed roles of states
-    * (boriswerner) fixed update interval label and set default port
-
 -->
+### **WORK IN PROGRESS**
+* (boriswerner) **Breaking Change:** All states from the 2.alpha versionshave been removed and the adapter has been completely redesigned. The Bayernlüfter devices need a new export configuration file. Please upload export_iobroker.txt to each of your devices and delete old states.
+* (mcm1957) Adapter requires node.js 20, js-controller 6 and admin 7 now.
+* (boriswerner) implemented commands for individual fan speeds (see  WS32240427 in https://www.bayernluft.de/de/wlan32_changelist.html):
+    When device is turned off, the fans can be set indivudually (commands: setSpeedIn, setSpeedOut, setSpeedAntiFreeze)
+* (boriswerner) changed states in "states"-folder to read-only
+* (boriswerner) changed roles of states
+* (boriswerner) fixed update interval label and set default port
+* (mcm1957) Dependencies have been updated
+
 ### 2.0.1 (2025-01-16)
 * (mcm1957) AdminUI and translations have been fixed.
 
