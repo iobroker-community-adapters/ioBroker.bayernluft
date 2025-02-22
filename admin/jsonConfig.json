@@ -4,7 +4,7 @@
 	"items": {
 		"pollInterval": {
 			"type": "number",
-			"label": "lblPollIntervall",
+			"label": "lblPollInterval",
 			"help": "hlpPollInterval",
 			"default": 60,
 			"newLine": true,
@@ -34,6 +34,7 @@
 				"type": "text",
 				"width": "33%",
 				"attr": "port",
+				"default": 80,
 				"title": "lblPort"
 			},
 			{

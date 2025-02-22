@@ -18,61 +18,30 @@ To use this adapter, you need to change the export template of the device
 **Be sure to follow the steps below**
 
 ## How to change the Template?
-1. Go to the Interface of your Device
+1. Go to the Web-Interface of your Device
 2. Click on the Settings Gear to head to the Settings
 3. Scroll Down until you see the Expert Mode
-4. Download and then delete the file 'export.txt' (Be sure to backup it before you continue)
-5. Create a new file on your Desktop called 'export.txt' (Be sure it is an Text File)
-6. Open the file and paste this into it.
-```json
-{
-    "data": {
-        "date": "~Date~",
-        "time": "~Time~",
-        "name": "~DeviceName~",
-        "mac": "~MAC~",
-        "local_IP": "~LocalIP~",
-        "rssi": "~RSSI~",
-        "fw_MainController": "~FW_MainController~",
-        "fw_WiFi": "~FW_WiFi~"
-    },
-    "parameter": {
-        "temperature_In": "~Temp_In~",
-        "temperature_Out": "~Temp_Out~",
-        "temperature_Fresh": "~Temp_Fresh~",
-        "rel_Humidity_In": "~rel_Humidity_In~",
-        "rel_Humidity_Out": "~rel_Humidity_Out~",
-        "abs_Humidity_In": "~abs_Humidity_In~",
-        "abs_Humidity_Out": "~abs_Humidity_Out~",
-        "efficiency": "~Efficiency~",
-        "humidity_Transport": "~Humidity_Transport~"
-    },
-    "states": {
-        "speed_In": "~Speed_In~",
-        "speed_Out": "~Speed_Out~",
-        "speed_antiFreeze": "~Speed_AntiFreeze~",
-        "SystemOn": "~_SystemOn~",
-        "AntiFreeze": "~_FrostschutzAktiv~",
-        "Fixed_Speed": "~_Frozen~",
-        "Defrosting": "~_AbtauMode~",
-        "Landlord_Mode": "~_VermieterMode~",
-        "Cross_Ventilation": "~_QuerlueftungAktiv~",
-        "Timer_active": "~_MaxMode~"
-    }
-}
-```
-7. Save the file and head back on the Devices Interface and upload the new 'export.txt' file.
+4. Upload the file 'export_iobroker.txt' from this github repository.
 8. Your Done, setup the device in the adapter instance. The standard port of the device is 80.
 
+## Nice to Know
+The commands commands.setSpeedIn, commands.setSpeedOut, commands.setSpeedAntiFreeze only work when the device is powered off. If the device is turned on, the commands are acknowledged by the device but nothing will happen (you can check manually in the corresponding states states.speed_in, states.speed_out and states.speed_antifreeze)
 
 ## Credits
-
 This adapter would not have been possible without the great work of @Marco15453 (https://github.com/Marco15453), who create V1.x.x of this adapter.
+Also a big thanks to the company Bayernluft for their great support
 
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
+    * (boriswerner) **Breaking Change:** All states from the 2.alpha versions or version 1 of the adapter were removed and the adapter more or less completely redesigned. The Bayernlüfter devices need a new export configuration file. Please upload export_iobroker.txt to each of your devices!
+    * (boriswerner) implemented commands for individual fan speeds (see  WS32240427 in https://www.bayernluft.de/de/wlan32_changelist.html):
+        When device is turned off, the fans can be set indivudually (commands: setSpeedIn, setSpeedOut, setSpeedAntiFreeze)
+    * (boriswerner) changed states in "states"-folder to read-only
+    * (boriswerner) changed roles of states
+    * (boriswerner) fixed update interval label and set default port
+
 -->
 ### 2.0.1 (2025-01-16)
 * (mcm1957) AdminUI and translations have been fixed.
