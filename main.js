@@ -141,8 +141,6 @@ class Bayernluft extends utils.Adapter {
             try {
                 const response = await NodeFetch(`http://${device.ip}:${device.port}/`);
                 if (response.ok) {
-                    this.log.debug(`Device ${device.name} is reachable.`);
-
                     if (!device.reachable) {
                         this.log.info(`Device ${device.name} is reachable.`);
                     } else {
