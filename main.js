@@ -28,7 +28,7 @@ class Bayernluft extends utils.Adapter {
         this.log.debug(`initDevices()`);
 
         for (const device of this.config.devices) {
-            if (!device.enabed) {
+            if (!device.enabled) {
                 this.log.debug(`Skipping device ${device.name} as not enabled`);
                 continue;
             }
