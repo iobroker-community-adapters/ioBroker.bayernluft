@@ -11,10 +11,13 @@
 **Tests:** ![Test and Release](https://github.com/iobroker-community-adapters/ioBroker.bayernluft/workflows/Test%20and%20Release/badge.svg)
 
 ## BayernLuft Adapter for ioBroker
-Connects BayernLuft into IoBroker
+Connects ventilation device manufactured by [BayernLuft](https://www.bayernluft.de/) to IoBroker systems.
+
+## Disclaimer
+**All product and company names or logos are trademarks™ or registered® trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them or any associated subsidiaries! This personal project is maintained in spare time and has no business goal.**
 
 ## What needs to be done?
-To use this adapter, you need to change the export template of the device
+To use this adapter, you need to change the export template of the device.  
 **Be sure to follow the steps below**
 
 ## How to change the Template?
