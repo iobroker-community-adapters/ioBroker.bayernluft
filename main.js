@@ -1064,7 +1064,7 @@ class Bayernluft extends utils.Adapter {
                 { preserve: { common: ['name'] } },
             );
 
-            //Create commands
+            // Create commands
             await this.extendObject(
                 `${device.id}.commands.setFanSpeed`,
                 {
@@ -1080,6 +1080,7 @@ class Bayernluft extends utils.Adapter {
                         write: true,
                         min: 0,
                         max: 10,
+                        def: 0, 
                     },
                     native: {},
                 },
@@ -1101,6 +1102,7 @@ class Bayernluft extends utils.Adapter {
                         write: true,
                         min: 0,
                         max: 10,
+                        def: 0, 
                     },
                     native: {},
                 },
@@ -1122,6 +1124,7 @@ class Bayernluft extends utils.Adapter {
                         write: true,
                         min: 0,
                         max: 10,
+                        def: 0, 
                     },
                     native: {},
                 },
@@ -1143,6 +1146,7 @@ class Bayernluft extends utils.Adapter {
                         write: true,
                         min: 0,
                         max: 50,
+                        def: 0, 
                     },
                     native: {},
                 },
@@ -1162,6 +1166,7 @@ class Bayernluft extends utils.Adapter {
                         role: 'button',
                         read: false,
                         write: true,
+                        def: false, 
                     },
                     native: {},
                 },
@@ -1181,6 +1186,7 @@ class Bayernluft extends utils.Adapter {
                         role: 'button',
                         read: false,
                         write: true,
+                        def: false, 
                     },
                     native: {},
                 },
@@ -1200,6 +1206,7 @@ class Bayernluft extends utils.Adapter {
                         role: 'button',
                         read: false,
                         write: true,
+                        def: false, 
                     },
                     native: {},
                 },
@@ -1219,6 +1226,7 @@ class Bayernluft extends utils.Adapter {
                         role: 'button',
                         read: false,
                         write: true,
+                        def: false, 
                     },
                     native: {},
                 },
@@ -1238,6 +1246,7 @@ class Bayernluft extends utils.Adapter {
                         role: 'button',
                         read: false,
                         write: true,
+                        def: false, 
                     },
                     native: {},
                 },
@@ -1257,6 +1266,7 @@ class Bayernluft extends utils.Adapter {
                         role: 'button',
                         read: false,
                         write: true,
+                        def: false, 
                     },
                     native: {},
                 },
