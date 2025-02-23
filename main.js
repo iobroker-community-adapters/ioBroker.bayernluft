@@ -5,9 +5,12 @@
  */
 
 const utils = require('@iobroker/adapter-core');
+// @ts-expect-error typechecking fails for spread operator
 const NodeFetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 class Bayernluft extends utils.Adapter {
+    devices = {};
+
     constructor(options) {
         super({
             ...options,
@@ -19,32 +22,49 @@ class Bayernluft extends utils.Adapter {
     }
 
     /**
-     * Checks the connections of the devices and sets the connection state accordingly.
+     * Initialices the internal device objects.
      */
-    async checkDeviceConnections() {
-        var isAtLeastOneDeviceReachable = false;
-        for (const device of this.config.devices) {
-            try {
-                const response = await NodeFetch(`http://${device.ip}:${device.port}/`);
-                if (response.ok) {
-                    this.log.debug(`Device ${device.name} is reachable.`);
+    async initDevices() {
+        this.log.debug(`initDevices()`);
 
-                    this.setState(`${device.name}.info.reachable`, true, true);
-                    isAtLeastOneDeviceReachable = true;
-                    //connection state set to true if at least one device is reachable
-                } else {
-                    this.log.warn(`Device ${device.name} is not reachable.`);
-                    this.setState(`${device.name}.info.reachable`, false, true);
-                }
-            } catch (error) {
-                this.log.warn(`Error checking connection for device ${device.name}: ${error.message}`);
-                this.setState(`${device.name}.info.reachable`, false, true);
-            }
+        if (!this.config.devices) {
+            return;
         }
-        if (isAtLeastOneDeviceReachable) {
-            this.setState('info.connection', true, true);
-        } else {
-            this.setState('info.connection', false, true);
+
+        for (const device of this.config.devices) {
+            if (!device.enabled) {
+                this.log.debug(`Skipping device ${device.name} as not enabled`);
+                continue;
+            }
+            if (device.name === '') {
+                this.log.warn(`Skipping device with empty name field`);
+                continue;
+            }
+            if (device.ip === '') {
+                this.log.error(`No ip specified for device ${device.name} - will be skipped`);
+            }
+            if (device.port < 0 || device.port > 65535) {
+                this.log.error(`Port ${device.port} is invalid for device ${device.name} - will be skipped`);
+            }
+
+            const dev = {};
+            dev.id = (device.name || '')
+                .replace('ß', 'ss')
+                .replace('ä', 'ae')
+                .replace('Ä', 'Ae')
+                .replace('ö', 'oe')
+                .replace('Ö', 'Oe')
+                .replace('ü', 'ue')
+                .replace('Ü', 'Ue')
+                .replace(/[^A-Za-z0-9-_]/, '_');
+            dev.enabled = device.enabled;
+            dev.name = device.name;
+            dev.ip = device.ip;
+            dev.port = device.port;
+            dev.online = device.online;
+            dev.reachable = undefined;
+
+            this.devices[dev.id] = dev;
         }
     }
 
@@ -54,37 +74,48 @@ class Bayernluft extends utils.Adapter {
     async onReady() {
         // Reset the connection indicator during startup
         this.setState('info.connection', false, true);
+
+        // initialize devices object
+        await this.initDevices();
+
         // If no devices are configured, disable the adapter
-        if (this.config.devices == null) {
+        if (!Object.keys(this.devices).length) {
             this.log.error('No devices have been set, disabling adapter!');
             this.disable();
             return;
         }
 
-        // Create initial objects for configured devices
-        await this.createInitialDeviceObjects();
+        // Create objects for enabled devices
+        await this.createDeviceObjects();
 
         // Check device connections and set info.connection if one is reachable
         await this.checkDeviceConnections();
 
-        //Create objects for configured and reachable devices
-        await this.createDeviceObjects();
-
         //initial device query
         await this.queryDevices();
 
-        //setup polling at interval
+        // limit pollIntervall and start polling
+        let pollInterval = this.config.pollInterval;
+        if (pollInterval < 5) {
+            this.log.info('pollintervall set to 5s');
+            pollInterval = 5;
+        }
+        if (pollInterval > 3600) {
+            this.log.info('pollinterval set to 3600s');
+            pollInterval = 3600;
+        }
+
         this.pollInterval = this.setInterval(async () => {
             // Check device connections and set info.connection if one is reachable
             await this.checkDeviceConnections();
             //device query
             await this.queryDevices();
-        }, this.config.pollInterval * 1000);
+        }, pollInterval * 1000);
     }
 
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
-      
+     *
      * @param callback Callback function
      */
     async onUnload(callback) {
@@ -98,39 +129,94 @@ class Bayernluft extends utils.Adapter {
     }
 
     /**
+     * Checks the connections of the devices and sets the connection state accordingly.
+     */
+    async checkDeviceConnections() {
+        this.log.debug(`checkDeviceConnections()`);
+
+        let isAtLeastOneDeviceReachable = false;
+        for (const id in this.devices) {
+            const device = this.devices[id];
+            this.log.debug(`checking device ${id} - ${device.name} - ${device.ip}:${device.port}`);
+            try {
+                const response = await NodeFetch(`http://${device.ip}:${device.port}/`);
+                if (response.ok) {
+                    this.log.debug(`Device ${device.name} is reachable.`);
+
+                    if (!device.reachable) {
+                        this.log.info(`Device ${device.name} is reachable.`);
+                    } else {
+                        this.log.debug(`Device ${device.name} is reachable.`);
+                    }
+
+                    device.reachable = true;
+                    this.setState(`${device.id}.info.reachable`, true, true);
+                    isAtLeastOneDeviceReachable = true;
+                    //connection state set to true if at least one device is reachable
+                } else {
+                    if (device.reachable === undefined || device.reachable) {
+                        this.log.warn(`Device ${device.name} is not reachable.`);
+                    } else {
+                        this.log.debug(`Device ${device.name} is not reachable.`);
+                    }
+
+                    device.reachable = false;
+                    this.setState(`${device.id}.info.reachable`, false, true);
+                }
+            } catch (error) {
+                if (device.reachable === undefined || device.reachable) {
+                    this.log.warn(`Error checking connection for device ${device.name}: ${error.message}`);
+                } else {
+                    this.log.debug(`Error checking connection for device ${device.name}: ${error.message}`);
+                }
+
+                device.reachable = false;
+                this.setState(`${device.id}.info.reachable`, false, true);
+            }
+        }
+
+        this.setState('info.connection', isAtLeastOneDeviceReachable, true);
+    }
+
+    /**
      * Query all devices and update states
      */
     async queryDevices() {
-        for await (const device of this.config.devices) {
+        this.log.debug(`queryDevices()`);
+
+        for (const id in this.devices) {
+            const device = this.devices[id];
+            this.log.debug(`checking device ${id} - ${device.name} - ${device.ip}:${device.port}`);
             this.queryDevice(device);
         }
     }
 
     /**
      * Query a specific device and update states
-      
+     *
      * @param device The device to query (full device object)
      */
     async queryDevice(device) {
-        //skip device if not reachable
-        this.log.debug(`Querying data for device: ${device.name}`);
-        const isDeviceReachableState = await this.getStateAsync(`${device.name}.info.reachable`);
-        if (isDeviceReachableState && !isDeviceReachableState.val) {
-            this.log.warn(`Skip polling for device: ${device.name} (not reachable)`);
+        this.log.debug(`queryDevice(${device.name})`);
+
+        if (!device.reachable) {
+            this.log.debug(`Skip polling for device: ${device.name} (not reachable)`);
             return;
         }
-        this.setState(`${device.name}.info.reachable`, true, true);
-        this.log.debug(`Polling data for device: ${device.name}`);
 
-        const deviceInfo = await this.getHttpRequest(
+        let deviceInfo = {};
+        deviceInfo = await this.getHttpRequest(
             `http://${device.ip}:${device.port}/index.html?export=iobroker&decimal=point`,
-            device.name,
+            device,
         );
 
         if (deviceInfo == null) {
+            this.log.debug(`Response for: ${device.name} - null`);
             return;
         }
+
         this.log.debug(`Response for: ${device.name} - ${JSON.stringify(deviceInfo)}`);
+
         if (deviceInfo.date) {
             this.log.debug(`date: ${deviceInfo.date}`);
             this.setState(`${device.name}.info.date`, deviceInfo.date, true);
@@ -260,26 +346,34 @@ class Bayernluft extends utils.Adapter {
 
     /**
      * Is called if a subscribed state changes
-      
+     *
      * @param id State ID that changed
      * @param state State object with the new state
      */
     async onStateChange(id, state) {
-        this.log.debug(`onStateChange: id: ${id} Value ${state.val} ACK ${state.ack}`);
+        this.log.debug(`onStateChange(id: ${id} Value ${state.val} ACK ${state.ack})`);
 
         if (id && state && !state.ack) {
             const id_splits = id.split('.');
             //const realid = `${id_splits[2]}.${id_splits[3]}.${id_splits[4]}`;
-            const device = await this.getDeviceByName(id_splits[2]);
+            //const device = await this.getDeviceByName(id_splits[2]);
+            const devId = id_splits[2];
+            if (!(devId && this.devices[devId])) {
+                return;
+            }
+
+            const device = this.devices[devId];
+
             this.log.debug(
                 `onStateChange: id: ${id} Device ${device.name} IP ${device.ip} Port ${device.port} Value ${state.val}`,
             );
+
             if (id.includes('.setFanSpeedIn')) {
                 const isSystemOnState = await this.getStateAsync(`${device.name}.info.on`);
                 if (isSystemOnState && !isSystemOnState.val) {
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedIn=${state.val}`,
-                        device.name,
+                        device,
                     );
                     if (!res) {
                         return this.log.error(
@@ -388,33 +482,18 @@ class Bayernluft extends utils.Adapter {
     }
 
     /**
-     * Get Device Info by Name
-     *
-     * @param name Device name
+     * Create device objects
      */
-    async getDeviceByName(name) {
-        const devices = this.config.devices;
-        if (devices == null || !devices) {
-            return null;
-        }
-        let device = null;
-        for await (const devicen of devices) {
-            if (devicen.name == name) {
-                device = devicen;
-                break;
-            }
-        }
-        return device;
-    }
+    async createDeviceObjects() {
+        this.log.debug(`createDeviceObjects()`);
 
-    /**
-     * Create initial device objects, e.g. if device is reachable
-     */
-    async createInitialDeviceObjects() {
-        for await (const device of this.config.devices) {
-            //Create Device
+        for (const id in this.devices) {
+            const device = this.devices[id];
+            this.log.debug(`creating objects for device ${id} - ${device.name} - ${device.ip}:${device.port}`);
+
+            //Create device objects
             this.extendObject(
-                device.name,
+                device.id,
                 {
                     type: 'device',
                     common: {
@@ -427,7 +506,7 @@ class Bayernluft extends utils.Adapter {
 
             // Create channels
             await this.extendObject(
-                `${device.name}.info`,
+                `${device.id}.info`,
                 {
                     type: 'channel',
                     common: {
@@ -440,7 +519,7 @@ class Bayernluft extends utils.Adapter {
 
             // Create reachable indicator
             await this.extendObject(
-                `${device.name}.info.reachable`,
+                `${device.id}.info.reachable`,
                 {
                     type: 'state',
                     common: {
@@ -457,23 +536,10 @@ class Bayernluft extends utils.Adapter {
                 },
                 { preserve: { common: ['name'] } },
             );
-        }
-    }
 
-    /**
-     * Create device specific objects
-     */
-    async createDeviceObjects() {
-        for await (const device of this.config.devices) {
-            //skip device if not reachable
-            const isDeviceReachableState = await this.getStateAsync(`${device.name}.info.reachable`);
-            if (isDeviceReachableState && !isDeviceReachableState.val) {
-                this.log.debug(`Skip creating device objects for device: ${device.name} (not reachable)`);
-                continue;
-            }
             // Create channels
             await this.extendObject(
-                `${device.name}.commands`,
+                `${device.id}.commands`,
                 {
                     type: 'channel',
                     common: {
@@ -486,7 +552,7 @@ class Bayernluft extends utils.Adapter {
 
             // Create Objects
             await this.extendObject(
-                `${device.name}.info.date`,
+                `${device.id}.info.date`,
                 {
                     type: 'state',
                     common: {
@@ -505,7 +571,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.info.time`,
+                `${device.id}.info.time`,
                 {
                     type: 'state',
                     common: {
@@ -524,7 +590,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.info.deviceName`,
+                `${device.id}.info.deviceName`,
                 {
                     type: 'state',
                     common: {
@@ -543,7 +609,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.info.mac`,
+                `${device.id}.info.mac`,
                 {
                     type: 'state',
                     common: {
@@ -562,7 +628,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.info.ip`,
+                `${device.id}.info.ip`,
                 {
                     type: 'state',
                     common: {
@@ -581,7 +647,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.info.rssi`,
+                `${device.id}.info.rssi`,
                 {
                     type: 'state',
                     common: {
@@ -600,7 +666,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.info.fwMainController`,
+                `${device.id}.info.fwMainController`,
                 {
                     type: 'state',
                     common: {
@@ -619,7 +685,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.info.fwWiFi`,
+                `${device.id}.info.fwWiFi`,
                 {
                     type: 'state',
                     common: {
@@ -638,7 +704,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.info.on`,
+                `${device.id}.info.on`,
                 {
                     type: 'state',
                     common: {
@@ -657,7 +723,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.temperatureIn`,
+                `${device.id}.temperatureIn`,
                 {
                     type: 'state',
                     common: {
@@ -676,7 +742,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.temperatureOut`,
+                `${device.id}.temperatureOut`,
                 {
                     type: 'state',
                     common: {
@@ -695,7 +761,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.temperatureFresh`,
+                `${device.id}.temperatureFresh`,
                 {
                     type: 'state',
                     common: {
@@ -714,7 +780,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.relativeHumidityIn`,
+                `${device.id}.relativeHumidityIn`,
                 {
                     type: 'state',
                     common: {
@@ -733,7 +799,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.relativeHumidityOut`,
+                `${device.id}.relativeHumidityOut`,
                 {
                     type: 'state',
                     common: {
@@ -752,7 +818,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.absoluteHumidityIn`,
+                `${device.id}.absoluteHumidityIn`,
                 {
                     type: 'state',
                     common: {
@@ -771,7 +837,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.absoluteHumidityOut`,
+                `${device.id}.absoluteHumidityOut`,
                 {
                     type: 'state',
                     common: {
@@ -790,7 +856,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.efficiency`,
+                `${device.id}.efficiency`,
                 {
                     type: 'state',
                     common: {
@@ -809,7 +875,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.humidityTransport`,
+                `${device.id}.humidityTransport`,
                 {
                     type: 'state',
                     common: {
@@ -828,7 +894,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.fanSpeedIn`,
+                `${device.id}.fanSpeedIn`,
                 {
                     type: 'state',
                     common: {
@@ -847,7 +913,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.fanSpeedOut`,
+                `${device.id}.fanSpeedOut`,
                 {
                     type: 'state',
                     common: {
@@ -866,7 +932,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.fanSpeedAntiFreeze`,
+                `${device.id}.fanSpeedAntiFreeze`,
                 {
                     type: 'state',
                     common: {
@@ -885,7 +951,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.isAntiFreezeActive`,
+                `${device.id}.isAntiFreezeActive`,
                 {
                     type: 'state',
                     common: {
@@ -904,7 +970,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.isFixedSpeedActive`,
+                `${device.id}.isFixedSpeedActive`,
                 {
                     type: 'state',
                     common: {
@@ -923,7 +989,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.isDefrostModeActive`,
+                `${device.id}.isDefrostModeActive`,
                 {
                     type: 'state',
                     common: {
@@ -942,7 +1008,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.isLandlordModeActive`,
+                `${device.id}.isLandlordModeActive`,
                 {
                     type: 'state',
                     common: {
@@ -961,7 +1027,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.isCrossVentilationActive`,
+                `${device.id}.isCrossVentilationActive`,
                 {
                     type: 'state',
                     common: {
@@ -980,7 +1046,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.isTimerActive`,
+                `${device.id}.isTimerActive`,
                 {
                     type: 'state',
                     common: {
@@ -1000,7 +1066,7 @@ class Bayernluft extends utils.Adapter {
 
             //Create commands
             await this.extendObject(
-                `${device.name}.commands.setFanSpeed`,
+                `${device.id}.commands.setFanSpeed`,
                 {
                     type: 'state',
                     common: {
@@ -1021,7 +1087,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.setFanSpeedIn`,
+                `${device.id}.commands.setFanSpeedIn`,
                 {
                     type: 'state',
                     common: {
@@ -1042,7 +1108,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.setFanSpeedOut`,
+                `${device.id}.commands.setFanSpeedOut`,
                 {
                     type: 'state',
                     common: {
@@ -1063,7 +1129,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.setFanSpeedAntiFreeze`,
+                `${device.id}.commands.setFanSpeedAntiFreeze`,
                 {
                     type: 'state',
                     common: {
@@ -1084,7 +1150,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.powerOn`,
+                `${device.id}.commands.powerOn`,
                 {
                     type: 'state',
                     common: {
@@ -1103,7 +1169,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.powerOff`,
+                `${device.id}.commands.powerOff`,
                 {
                     type: 'state',
                     common: {
@@ -1122,7 +1188,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.togglePower`,
+                `${device.id}.commands.togglePower`,
                 {
                     type: 'state',
                     common: {
@@ -1141,7 +1207,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.autoMode`,
+                `${device.id}.commands.autoMode`,
                 {
                     type: 'state',
                     common: {
@@ -1160,7 +1226,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.timer`,
+                `${device.id}.commands.timer`,
                 {
                     type: 'state',
                     common: {
@@ -1179,7 +1245,7 @@ class Bayernluft extends utils.Adapter {
             );
 
             await this.extendObject(
-                `${device.name}.commands.syncTime`,
+                `${device.id}.commands.syncTime`,
                 {
                     type: 'state',
                     common: {
@@ -1197,40 +1263,42 @@ class Bayernluft extends utils.Adapter {
                 { preserve: { common: ['name'] } },
             );
 
-            this.subscribeStates(`${device.name}.commands.*`);
+            this.subscribeStates(`${device.id}.commands.*`);
         }
     }
 
     /**
      *
      * @param url URL to get Data from
-     * @param deviceName Device Name
+     * @param device device object
      */
-    async getHttpRequest(url, deviceName) {
+    async getHttpRequest(url, device) {
+        this.log.debug(`getHttpRequest(${url},${device.name})`);
+
         let response = null;
         try {
             response = await NodeFetch(url);
         } catch (error) {
-            this.setState(`${deviceName}.info.reachable`, false, true);
+            this.setState(`${device.id}.info.reachable`, false, true);
             if (error.code == 'ETIMEDOUT') {
                 this.log.warn(
-                    `An error has occured while trying to get response from device ${deviceName}. The Connection timed out!`,
+                    `An error has occured while trying to get response from device ${device.name}. Connection timed out!`,
                 );
                 return null;
             }
             if (error.code == 'ECONNREFUSED') {
                 this.log.warn(
-                    `An error has occured while trying to get response from device ${deviceName}. The Connection has been refused!`,
+                    `An error has occured while trying to get response from device ${device.name}. Connection has been refused!`,
                 );
                 return null;
             }
-            this.log.warn(`An unexpected error has occred while trying to get response from device ${deviceName}.`);
+            this.log.warn(`An unexpected error has occured while trying to get response from device ${device.name}.`);
             return null;
         }
 
         let data = null;
         try {
-            data = await response.json();
+            data = response.json();
         } catch (error) {
             if (error.type == 'invalid-json') {
                 this.log.error(
@@ -1241,9 +1309,7 @@ class Bayernluft extends utils.Adapter {
             this.log.error(`Unexpected Error while trying to format json data! ${error}`);
             return null;
         }
-        if (data == null) {
-            return null;
-        }
+
         return data;
     }
 
@@ -1254,6 +1320,8 @@ class Bayernluft extends utils.Adapter {
      * @param deviceName Device Name
      */
     async sendHttpRequest(url, deviceName) {
+        this.log.debug(`sendHttpRequest(${url}, ${deviceName})`);
+
         let response = null;
         try {
             response = await NodeFetch(url);
