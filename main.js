@@ -80,8 +80,8 @@ class Bayernluft extends utils.Adapter {
 
         // If no devices are configured, disable the adapter
         if (!Object.keys(this.devices).length) {
-            this.log.error('No devices have been set, terminating...');
-            this.terminate(utils.EXIT_CODES.NO_ERROR);
+            this.log.error('No devices have been set, disabling adapter!');
+            this.disable();
             return;
         }
 
