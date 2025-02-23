@@ -391,7 +391,7 @@ class Bayernluft extends utils.Adapter {
                 if (isSystemOnState && !isSystemOnState.val) {
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedOut=${state.val}`,
-                        device.name,
+                        device,
                     );
                     if (!res) {
                         return this.log.error(
@@ -409,7 +409,7 @@ class Bayernluft extends utils.Adapter {
                 if (isSystemOnState && !isSystemOnState.val) {
                     const res = await this.sendHttpRequest(
                         `http://${device.ip}:${device.port}/?speedFrM=${state.val}`,
-                        device.name,
+                        device,
                     );
                     if (!res) {
                         return this.log.error(
@@ -425,7 +425,7 @@ class Bayernluft extends utils.Adapter {
             } else if (id.includes('.setFanSpeed')) {
                 const res = await this.sendHttpRequest(
                     `http://${device.ip}:${device.port}/?speed=${state.val}`,
-                    device.name,
+                    device,
                 );
                 if (!res) {
                     return this.log.error(
@@ -435,19 +435,19 @@ class Bayernluft extends utils.Adapter {
                 this.log.debug(`DEBUG: Setting ACK id ${id} to true`);
                 this.setState(id, state.val, true);
             } else if (id.includes('.powerOn')) {
-                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?power=on`);
+                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?power=on`, device);
                 if (!res) {
                     return this.log.error(`An error has occured while trying to power on device ${device.name}`);
                 }
                 await this.setState(id, false, true);
             } else if (id.includes('.powerOff')) {
-                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?power=off`);
+                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?power=off`, device);
                 if (!res) {
                     return this.log.error(`An error has occured while trying to power off device ${device.name}`);
                 }
                 await this.setState(id, false, true);
             } else if (id.includes('.autoMode')) {
-                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?speed=0`);
+                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?speed=0`, device);
                 if (!res) {
                     return this.log.error(
                         `An error has occured while trying to set automatic mode for device ${device.name}`,
@@ -455,7 +455,7 @@ class Bayernluft extends utils.Adapter {
                 }
                 await this.setState(id, false, true);
             } else if (id.includes('.togglePower')) {
-                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?button=power`);
+                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?button=power`, device);
                 if (!res) {
                     return this.log.error(
                         `An error has occured while trying to send power button for device ${device.name}`,
@@ -463,7 +463,7 @@ class Bayernluft extends utils.Adapter {
                 }
                 await this.setState(id, false, true);
             } else if (id.includes('.timer')) {
-                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?button=timer`);
+                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/?button=timer`, device);
                 if (!res) {
                     return this.log.error(
                         `An error has occured while trying to send power button to device ${device.name}`,
@@ -471,7 +471,7 @@ class Bayernluft extends utils.Adapter {
                 }
                 await this.setState(id, false, true);
             } else if (id.includes('.syncTime')) {
-                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/index.html?TimeSync=1`);
+                const res = await this.sendHttpRequest(`http://${device.ip}:${device.port}/index.html?TimeSync=1`, device);
                 if (!res) {
                     return this.log.error(`An error has occured while trying to sync time for device ${device.name}`);
                 }
@@ -1319,8 +1319,8 @@ class Bayernluft extends utils.Adapter {
      * @param url URL to send the Command
      * @param deviceName Device Name
      */
-    async sendHttpRequest(url, deviceName) {
-        this.log.debug(`sendHttpRequest(${url}, ${deviceName})`);
+    async sendHttpRequest(url, device) {
+        this.log.debug(`sendHttpRequest(${url}, ${device.name})`);
 
         let response = null;
         try {
@@ -1328,17 +1328,17 @@ class Bayernluft extends utils.Adapter {
         } catch (error) {
             if (error.code == 'ETIMEDOUT') {
                 this.log.error(
-                    `An error has occured while trying to send request to device ${deviceName}. The Connection timed out!`,
+                    `An error has occured while trying to send request to device ${device.name}. The Connection timed out!`,
                 );
                 return null;
             }
             if (error.code == 'ECONNREFUSED') {
                 this.log.error(
-                    `An error has occured while trying to send request to device ${deviceName}. The Connection has been refused!`,
+                    `An error has occured while trying to send request to device ${device.name}. The Connection has been refused!`,
                 );
                 return null;
             }
-            this.log.error(`An unexpected error has occred while trying to send request to device ${deviceName}.`);
+            this.log.error(`An unexpected error has occred while trying to send request to device ${device.name}.`);
         }
 
         if (response.status == 200 && response.statusText == 'OK') {
