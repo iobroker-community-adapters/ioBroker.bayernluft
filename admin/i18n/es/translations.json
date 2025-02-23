@@ -5,5 +5,6 @@
     "lblIp": "Dirección IP",
     "lblPort": "Puerto",
     "lblName": "Nombre",
-    "lblDevices": "Dispositivos"
+    "lblDevices": "Dispositivos",
+    "lblEnabled": "Activado"
 }

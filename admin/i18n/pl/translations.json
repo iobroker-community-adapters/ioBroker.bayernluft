@@ -5,5 +5,6 @@
     "lblIp": "Adres IP",
     "lblPort": "Port",
     "lblName": "Nazwa",
-    "lblDevices": "Urządzenia"
+    "lblDevices": "Urządzenia",
+    "lblEnabled": "Włączony"
 }

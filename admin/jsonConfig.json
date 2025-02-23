@@ -7,6 +7,8 @@
 			"label": "lblPollInterval",
 			"help": "hlpPollInterval",
 			"default": 60,
+			"min": 5,
+			"max": 3600,
 			"newLine": true,
 			"xs": 12,
 			"sm": 12,
@@ -24,25 +26,42 @@
 			"md": 12,
 			"lg": 12,
 			"xl": 12,
-			"items": [{
-				"type": "text",
-				"width": "33%",
-				"attr": "ip",
-				"title": "lblIp"
-			},
-			{
-				"type": "text",
-				"width": "33%",
-				"attr": "port",
-				"default": 80,
-				"title": "lblPort"
-			},
-			{
-				"type": "text",
-				"width": "33%",
-				"attr": "name",
-				"title": "lblName"
-			}]
+			"items": [
+				{
+					"type": "checkbox",
+					"attr": "enabled",
+					"width": "10% ",
+					"title": "lblEnabled",
+					"filter": false,
+					"sort": false,
+					"default": true
+				},
+				{
+					"type": "text",
+					"width": "35%",
+					"attr": "ip",
+					"title": "lblIp",
+					"validator": "data.ip&&data.ip!=''",
+					"validatorNoSaveOnError": true
+				},
+				{
+					"type": "number",
+					"width": "20%",
+					"attr": "port",
+					"default": 80,
+					"title": "lblPort",
+					"min": 1,
+					"max": 65535
+				},
+				{
+					"type": "text",
+					"width": "35%",
+					"attr": "name",
+					"title": "lblName",
+					"validator": "data.ip&&data.ip!=''",
+					"validatorNoSaveOnError": true
+				}
+			]
 		}
 	}
 }
