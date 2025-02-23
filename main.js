@@ -27,6 +27,10 @@ class Bayernluft extends utils.Adapter {
     async initDevices() {
         this.log.debug(`initDevices()`);
 
+        if (!this.config.devices) {
+            return;
+        }
+
         for (const device of this.config.devices) {
             if (!device.enabled) {
                 this.log.debug(`Skipping device ${device.name} as not enabled`);
@@ -44,12 +48,21 @@ class Bayernluft extends utils.Adapter {
             }
 
             const dev = {};
-            dev.id = (device.name || '').replace(/[^A-Za-z0-9-_]/, '_');
+            dev.id = (device.name || '')
+                .replace('ß', 'ss')
+                .replace('ä', 'ae')
+                .replace('Ä', 'Ae')
+                .replace('ö', 'oe')
+                .replace('Ö', 'Oe')
+                .replace('ü', 'ue')
+                .replace('Ü', 'Ue')
+                .replace(/[^A-Za-z0-9-_]/, '_');
             dev.enabled = device.enabled;
             dev.name = device.name;
             dev.ip = device.ip;
             dev.port = device.port;
             dev.online = device.online;
+            dev.reachable = undefined;
 
             this.devices[dev.id] = dev;
         }
@@ -67,9 +80,9 @@ class Bayernluft extends utils.Adapter {
 
         // If no devices are configured, disable the adapter
         if (!Object.keys(this.devices).length) {
-            this.log.error('No devices have been set, disabling adapter!');
+            this.log.error('No devices have been set, terminating...');
             this.terminate(utils.EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
-            // no reach area
+            return;
         }
 
         // Create objects for enabled devices
@@ -130,15 +143,34 @@ class Bayernluft extends utils.Adapter {
                 if (response.ok) {
                     this.log.debug(`Device ${device.name} is reachable.`);
 
+                    if (!device.reachable) {
+                        this.log.info(`Device ${device.name} is reachable.`);
+                    } else {
+                        this.log.debug(`Device ${device.name} is reachable.`);
+                    }
+
+                    device.reachable = true;
                     this.setState(`${device.id}.info.reachable`, true, true);
                     isAtLeastOneDeviceReachable = true;
                     //connection state set to true if at least one device is reachable
                 } else {
-                    this.log.warn(`Device ${device.name} is not reachable.`);
+                    if (device.reachable === undefined || device.reachable) {
+                        this.log.warn(`Device ${device.name} is not reachable.`);
+                    } else {
+                        this.log.debug(`Device ${device.name} is not reachable.`);
+                    }
+
+                    device.reachable = false;
                     this.setState(`${device.id}.info.reachable`, false, true);
                 }
             } catch (error) {
-                this.log.warn(`Error checking connection for device ${device.name}: ${error.message}`);
+                if (device.reachable === undefined || device.reachable) {
+                    this.log.warn(`Error checking connection for device ${device.name}: ${error.message}`);
+                } else {
+                    this.log.debug(`Error checking connection for device ${device.name}: ${error.message}`);
+                }
+
+                device.reachable = false;
                 this.setState(`${device.id}.info.reachable`, false, true);
             }
         }
@@ -152,7 +184,7 @@ class Bayernluft extends utils.Adapter {
     async queryDevices() {
         this.log.debug(`queryDevices()`);
 
-        for (const id of this.config.devices) {
+        for (const id in this.devices) {
             const device = this.devices[id];
             this.log.debug(`checking device ${id} - ${device.name} - ${device.ip}:${device.port}`);
             this.queryDevice(device);
@@ -168,7 +200,7 @@ class Bayernluft extends utils.Adapter {
         this.log.debug(`queryDevice(${device.name})`);
 
         if (!device.reachable) {
-            this.log.warn(`Skip polling for device: ${device.name} (not reachable)`);
+            this.log.debug(`Skip polling for device: ${device.name} (not reachable)`);
             return;
         }
 
@@ -449,89 +481,15 @@ class Bayernluft extends utils.Adapter {
         }
     }
 
-    // /**
-    //  * Get Device Info by Name
-    //  *
-    //  * @param name Device name
-    //  */
-    // async getDeviceByName(name) {
-    //     this.log.debug(`getDeviceByName(${name})`);
-    //     const devices = this.config.devices;
-    //     if (devices == null || !devices) {
-    //         return null;
-    //     }
-    //     let device = null;
-    //     for await (const devicen of devices) {
-    //         if (devicen.name == name) {
-    //             device = devicen;
-    //             break;
-    //         }
-    //     }
-    //     return device;
-    // }
-
-    // /**
-    //  * Create initial device objects, e.g. if device is reachable
-    //  */
-    // async createInitialDeviceObjects() {
-    //     for await (const device of this.config.devices) {
-    //         //Create Device
-    //         this.extendObject(
-    //             device.name,
-    //             {
-    //                 type: 'device',
-    //                 common: {
-    //                     name: `${device.name}`,
-    //                 },
-    //                 native: {},
-    //             },
-    //             { preserve: { common: ['name'] } },
-    //         );
-
-    //         // Create channels
-    //         await this.extendObject(
-    //             `${device.name}.info`,
-    //             {
-    //                 type: 'channel',
-    //                 common: {
-    //                     name: 'Information',
-    //                 },
-    //                 native: {},
-    //             },
-    //             { preserve: { common: ['name'] } },
-    //         );
-
-    //         // Create reachable indicator
-    //         await this.extendObject(
-    //             `${device.name}.info.reachable`,
-    //             {
-    //                 type: 'state',
-    //                 common: {
-    //                     name: {
-    //                         de: 'Gerät ist erreichbar',
-    //                         en: 'Device is reachable',
-    //                     },
-    //                     type: 'boolean',
-    //                     role: 'indicator.reachable',
-    //                     read: true,
-    //                     write: false,
-    //                 },
-    //                 native: {},
-    //             },
-    //             { preserve: { common: ['name'] } },
-    //         );
-    //     }
-    // }
-
     /**
-     * Create device specific objects
+     * Create device objects
      */
     async createDeviceObjects() {
         this.log.debug(`createDeviceObjects()`);
 
         for (const id in this.devices) {
             const device = this.devices[id];
-            this.log.debug(`creating objectsfor device ${id} - ${device.name} - ${device.ip}:${device.port}`);
+            this.log.debug(`creating objects for device ${id} - ${device.name} - ${device.ip}:${device.port}`);
 
             //Create device objects
             this.extendObject(
