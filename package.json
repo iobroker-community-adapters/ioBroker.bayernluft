@@ -1,6 +1,6 @@
 {
   "name": "iobroker.bayernluft",
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0",
   "description": "Connects BayernLuft into IoBroker",
   "author": {
     "name": "Marco15453",
