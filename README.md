@@ -47,6 +47,9 @@ Also a big thanks to the company Bayernluft for their great support
 * (boriswerner) changed states in "states"-folder to read-only
 * (boriswerner) changed roles of states
 * (boriswerner) fixed update interval label and set default port
+* (mcm1957) Missing values from device are show null and qs falg 0x82 now
+* (mcm1957) Units have been added where appropiate
+* (mcm1957) Translations have been added for all supported languages
 * (mcm1957) Dependencies have been updated
 
 ### 2.0.1 (2025-01-16)
