@@ -39,14 +39,14 @@ Also a big thanks to the company Bayernluft for their great support
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 3.0.0-alpha.1 (2025-02-24)
+### **WORK IN PROGRESS**
 * (boriswerner) **Breaking Change:** All states from the 2.alpha versions have been removed and the adapter has been completely redesigned. The Bayernlüfter devices need a new export configuration file. Please upload export_iobroker.txt to each of your devices and delete old states.
 * (mcm1957) Adapter requires node.js 20, js-controller 6 and admin 7 now.
-* (boriswerner) implemented commands for individual fan speeds (see  WS32240427 in https://www.bayernluft.de/de/wlan32_changelist.html):
+* (boriswerner) Commands have been implemnted for individual fan speeds (see  WS32240427 in https://www.bayernluft.de/de/wlan32_changelist.html):
     When device is turned off, the fans can be set individually (commands: setSpeedIn, setSpeedOut, setSpeedAntiFreeze)
-* (boriswerner) changed states in "states"-folder to read-only
-* (boriswerner) changed roles of states
-* (boriswerner) fixed update interval label and set default port
+* (boriswerner) States in "states"-folder have been set to read-only
+* (boriswerner) Roles of states have been changed
+* (boriswerner) Update interval label and set default port have been fixed
 * (mcm1957) Missing values from device are set to null and qs flag is set to 0x82 now
 * (mcm1957) Units have been added where appropiate
 * (mcm1957) Translations have been added for all supported languages
