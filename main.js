@@ -214,104 +214,174 @@ class Bayernluft extends utils.Adapter {
         }
 
         this.log.debug(`Response for: ${device.name} - ${JSON.stringify(deviceInfo)}`);
+        // qs 0x82 indicates sensor not connected
 
-        if (deviceInfo.date) {
+        if (deviceInfo.date !== undefined) {
             this.log.debug(`date: ${deviceInfo.date}`);
             this.setState(`${device.name}.info.date`, deviceInfo.date, true);
+        } else {
+            this.setState(`${device.name}.info.date`, { val: null, ack: true, q: 0x82 });
         }
-        if (deviceInfo.time) {
+
+        if (deviceInfo.time !== undefined) {
             this.log.debug(`time: ${deviceInfo.time}`);
             this.setState(`${device.name}.info.time`, deviceInfo.time, true);
+        } else {
+            this.setState(`${device.name}.info.time`, { val: null, ack: true, q: 0x82 });
         }
-        if (deviceInfo.deviceName) {
+
+        if (deviceInfo.deviceName !== undefined) {
             this.log.debug(`deviceName: ${deviceInfo.deviceName}`);
             this.setState(`${device.name}.info.deviceName`, deviceInfo.deviceName, true);
+        } else {
+            this.setState(`${device.name}.info.deviceName`, { val: null, ack: true, q: 0x82 });
         }
-        if (deviceInfo.mac) {
+
+        if (deviceInfo.mac !== undefined) {
             this.log.debug(`mac: ${deviceInfo.mac}`);
             this.setState(`${device.name}.info.mac`, deviceInfo.mac, true);
+        } else {
+            this.setState(`${device.name}.info.mac`, { val: null, ack: true, q: 0x82 });
         }
-        if (deviceInfo.localIP) {
+
+        if (deviceInfo.localIP !== undefined) {
             this.log.debug(`ip: ${deviceInfo.localIP}`);
             this.setState(`${device.name}.info.ip`, deviceInfo.localIP, true);
+        } else {
+            this.setState(`${device.name}.info.ip`, { val: null, ack: true, q: 0x82 });
         }
-        if (deviceInfo.rssi) {
+
+        if (deviceInfo.rssi !== undefined) {
             this.log.debug(`rssi: ${deviceInfo.rssi}`);
             this.setState(`${device.name}.info.rssi`, parseInt(deviceInfo.rssi), true);
+        } else {
+            this.setState(`${device.name}.info.rssi`, { val: null, ack: true, q: 0x82 });
         }
-        if (deviceInfo.fwMainController) {
+
+        if (deviceInfo.fwMainController !== undefined) {
             this.log.debug(`fwMainController: ${deviceInfo.fwMainController}`);
             this.setState(`${device.name}.info.fwMainController`, deviceInfo.fwMainController, true);
+        } else {
+            this.setState(`${device.name}.info.fwMainController`, { val: null, ack: true, q: 0x82 });
         }
-        if (deviceInfo.fwWiFi) {
+
+        if (deviceInfo.fwWiFi !== undefined) {
             this.log.debug(`fwWiFi: ${deviceInfo.fwWiFi}`);
             this.setState(`${device.name}.info.fwWiFi`, deviceInfo.fwWiFi, true);
+        } else {
+            this.setState(`${device.name}.info.fwWiFi`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.isSystemOn !== undefined) {
             this.log.debug(`on: ${deviceInfo.isSystemOn == 0 ? false : true}`);
             this.setState(`${device.name}.info.on`, deviceInfo.isSystemOn == 0 ? false : true, true);
+        } else {
+            this.setState(`${device.name}.info.on`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.temperatureIn !== undefined) {
             this.log.debug(`temperatureIn: ${deviceInfo.temperatureIn}`);
             this.setState(`${device.name}.temperatureIn`, parseFloat(deviceInfo.temperatureIn), true);
+        } else {
+            this.setState(`${device.name}.temperatureIn`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.temperatureOut !== undefined) {
             this.log.debug(`temperatureOut: ${deviceInfo.temperatureOut}`);
             this.setState(`${device.name}.temperatureOut`, parseFloat(deviceInfo.temperatureOut), true);
+        } else {
+            this.setState(`${device.name}.temperatureOut`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.temperatureFresh !== undefined) {
             this.log.debug(`temperatureFresh: ${deviceInfo.temperatureFresh}`);
             this.setState(`${device.name}.temperatureFresh`, parseFloat(deviceInfo.temperatureFresh), true);
+        } else {
+            this.setState(`${device.name}.temperatureFresh`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.relativeHumidityIn !== undefined) {
             this.log.debug(`relativeHumidityIn: ${deviceInfo.relativeHumidityIn}`);
             this.setState(`${device.name}.relativeHumidityIn`, parseFloat(deviceInfo.relativeHumidityIn), true);
+        } else {
+            this.setState(`${device.name}.relativeHumidityIn`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.relativeHumidityOut !== undefined) {
             this.log.debug(`relativeHumidityOut: ${deviceInfo.relativeHumidityOut}`);
             this.setState(`${device.name}.relativeHumidityOut`, parseFloat(deviceInfo.relativeHumidityOut), true);
+        } else {
+            this.setState(`${device.name}.relativeHumidityOut`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.absoluteHumidityIn !== undefined) {
             this.log.debug(`absoluteHumidityIn: ${deviceInfo.absoluteHumidityIn}`);
             this.setState(`${device.name}.absoluteHumidityIn`, parseFloat(deviceInfo.absoluteHumidityIn), true);
+        } else {
+            this.setState(`${device.name}.absoluteHumidityIn`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.absoluteHumidityOut !== undefined) {
             this.log.debug(`absoluteHumidityOut: ${deviceInfo.absoluteHumidityOut}`);
             this.setState(`${device.name}.absoluteHumidityOut`, parseFloat(deviceInfo.absoluteHumidityOut), true);
+        } else {
+            this.setState(`${device.name}.absoluteHumidityOut`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.efficiency !== undefined) {
             this.log.debug(`efficiency: ${deviceInfo.efficiency}`);
             if (deviceInfo.efficiency == 'N/A') {
                 //when device is off, query returns  'efficiency':'N/A'
-                this.setState(`${device.name}.efficiency`, 0, true);
+                this.setState(`${device.name}.efficiency`, { val: 0, ack: true, q: 0x10 }); // substitute value from controller
             } else {
                 this.setState(`${device.name}.efficiency`, parseFloat(deviceInfo.efficiency), true);
             }
+        } else {
+            this.setState(`${device.name}.efficiency`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.humidityTransport !== undefined) {
             this.log.debug(`humidityTransport: ${deviceInfo.humidityTransport}`);
             this.setState(`${device.name}.humidityTransport`, parseInt(deviceInfo.humidityTransport), true);
+        } else {
+            this.setState(`${device.name}.humidityTransport`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.fanSpeedIn !== undefined) {
             this.log.debug(`fanSpeedIn: ${deviceInfo.fanSpeedIn}`);
             this.setState(`${device.name}.fanSpeedIn`, parseInt(deviceInfo.fanSpeedIn), true);
+        } else {
+            this.setState(`${device.name}.fanSpeedIn`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.fanSpeedOut !== undefined) {
             this.log.debug(`fanSpeedOut: ${deviceInfo.fanSpeedOut}`);
             this.setState(`${device.name}.fanSpeedOut`, parseInt(deviceInfo.fanSpeedOut), true);
+        } else {
+            this.setState(`${device.name}.fanSpeedOut`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.fanSpeedAntiFreeze !== undefined) {
             this.log.debug(`fanSpeedAntiFreeze: ${deviceInfo.fanSpeedAntiFreeze}`);
             this.setState(`${device.name}.fanSpeedAntiFreeze`, parseInt(deviceInfo.fanSpeedAntiFreeze), true);
+        } else {
+            this.setState(`${device.name}.fanSpeedAntiFreeze`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.isAntiFreezeActive !== undefined) {
             this.log.debug(`isAntiFreezeActive: ${deviceInfo.isAntiFreezeActive == 0 ? false : true}`);
             this.setState(`${device.name}.isAntiFreezeActive`, deviceInfo.isAntiFreezeActive == 0 ? false : true, true);
+        } else {
+            this.setState(`${device.name}.isAntiFreezeActive`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.isFixedSpeedActive !== undefined) {
             this.log.debug(`isFixedSpeedActive: ${deviceInfo.isFixedSpeedActive == 0 ? false : true}`);
             this.setState(`${device.name}.isFixedSpeedActive`, deviceInfo.isFixedSpeedActive == 0 ? false : true, true);
+        } else {
+            this.setState(`${device.name}.isFixedSpeedActive`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.isDefrostModeActive !== undefined) {
             this.log.debug(`isDefrostModeActive: ${deviceInfo.isDefrostModeActive == 0 ? false : true}`);
             this.setState(
@@ -319,7 +389,10 @@ class Bayernluft extends utils.Adapter {
                 deviceInfo.isDefrostModeActive == 0 ? false : true,
                 true,
             );
+        } else {
+            this.setState(`${device.name}.isDefrostModeActive`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.isLandlordModeActive !== undefined) {
             this.log.debug(`isLandlordModeActive: ${deviceInfo.isLandlordModeActive == 0 ? false : true}`);
             this.setState(
@@ -327,7 +400,10 @@ class Bayernluft extends utils.Adapter {
                 deviceInfo.isLandlordModeActive == 0 ? false : true,
                 true,
             );
+        } else {
+            this.setState(`${device.name}.isLandlordModeActive`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.isCrossVentilationActive !== undefined) {
             this.log.debug(`isCrossVentilationActive: ${deviceInfo.isCrossVentilationActive == 0 ? false : true}`);
             this.setState(
@@ -335,10 +411,15 @@ class Bayernluft extends utils.Adapter {
                 deviceInfo.isCrossVentilationActive == 0 ? false : true,
                 true,
             );
+        } else {
+            this.setState(`${device.name}.isCrossVentilationActive`, { val: null, ack: true, q: 0x82 });
         }
+
         if (deviceInfo.isTimerActive !== undefined) {
             this.log.debug(`isTimerActive: ${deviceInfo.isTimerActive == 0 ? false : true}`);
             this.setState(`${device.name}.isTimerActive`, deviceInfo.isTimerActive == 0 ? false : true, true);
+        } else {
+            this.setState(`${device.name}.isTimerActive`, { val: null, ack: true, q: 0x82 });
         }
     }
 
