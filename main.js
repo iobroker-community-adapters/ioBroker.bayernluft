@@ -22,7 +22,7 @@ class Bayernluft extends utils.Adapter {
     }
 
     /**
-     * Initialices the internal device objects.
+     * Initialices the internal device objects
      */
     async initDevices() {
         this.log.debug(`initDevices()`);
