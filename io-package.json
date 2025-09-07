@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bayernluft",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "news": {
+      "3.1.0": {
+        "en": "Adapter requires Admin >= 7.6.17, js-controller >= 6.0.11 and node.js >= 20 now.\nDependencies have been updated",
+        "de": "Adapter benötigt Admin >= 7.6.17, js-Controller >= 6.0.11 und node.js >= 20 jetzt.\nAbhängigkeiten wurden aktualisiert",
+        "ru": "Адаптер требует Admin >= 7.6.17, js-контроллер >= 6.0.11 и node.js >= 20 сейчас.\nЗависимости были обновлены",
+        "pt": "O adaptador necessita de Admin >= 7.6.17, js-controlador >= 6.0.11 e nod.js >= 20 agora.\nAs dependências foram atualizadas",
+        "nl": "Voor adapter is een Admin < 7,6.17, js-controller > 6,0.11 en node.js > 20 nodig.\nAfhankelijkheden zijn bijgewerkt",
+        "fr": "Adaptateur nécessite Admin >= 7.6.17, js-controller >= 6.0.11 et node.js >= 20 maintenant.\nLes dépendances ont été actualisées",
+        "it": "Adattatore richiede Admin >= 7.6.17, js-controller >= 6.0.11 e node.js >= 20 ora.\nLe dipendenze sono state aggiornate",
+        "es": "Adaptador requiere Admin √= 7.6.17, js-controller ю= 6.0.11 y node.js ю= 20 ahora.\nSe han actualizado las dependencias",
+        "pl": "Adapter wymaga admin > = 7.6.17, kontroler js- controller > = 6.0.11 i node.js > = 20 teraz.\nZaktualizowano zależności",
+        "uk": "Адаптер вимагає Admin >= 7.6.17, js-controller >= 6.0.11 і node.js >= 20 тепер.\nЗалежність було оновлено",
+        "zh-cn": "适配器需要Admin >= 7.6.17,js控制器 >= 6.0.11和节点.js >= 20 现在.\n依赖关系已更新"
+      },
       "3.0.0": {
         "en": "* **Breaking Change:** All states from the 2.alpha versions have been removed and the adapter has been completely redesigned. The Bayernlüfter devices need a new export configuration file. Please upload export_iobroker.txt to each of your devices and delete old states.\n* Adapter requires node.js 20, js-controller 6 and admin 7 now.\n* Commands have been implemented for individual fan speeds (see  WS32240427 in https://www.bayernluft.de/de/wlan32_changelist.html):\n    When device is turned off, the fans can be set individually (commands: setSpeedIn, setSpeedOut, setSpeedAntiFreeze)\n* States in \"states\"-folder have been set to read-only\n* Roles of states have been changed\n* Update interval label and set default port have been fixed\n* Missing values from device are set to null and qs flag is set to 0x82 now\n* Units have been added where appropiate\n* Translations have been added for all supported languages\n* Dependencies have been updated",
         "de": "* **Veränderung:** Alle Zustände aus den 2.alpha-Versionen wurden entfernt und der Adapter wurde komplett neu gestaltet. Die Bayernlüfter Geräte benötigen eine neue Exportkonfigurationsdatei. Bitte laden Sie export_iobroker.txt auf jedes Ihrer Geräte hoch und löschen Sie alte Zustände.\n* Adapter benötigt jetzt node.js 20, js-controller 6 und admin 7.\n* Befehle für einzelne Lüfterdrehzahlen wurden implementiert (siehe WS32240427 unter https://www.bayernluft.de/de/wlan32_changelist.html):\nWenn das Gerät ausgeschaltet wird, können die Fans individuell eingestellt werden (Befehle: setSpeedIn, setSpeedOut, setSpeedAntiFreeze)\n* Zustände im \"states\"-folder wurden auf read-only gesetzt\n* Rollen der Zustände wurden geändert\n* Update-Intervall-Label und Standard-Port wurden korrigiert\n* Fehlende Werte vom Gerät werden auf Null gesetzt und qs Flag wird jetzt auf 0x82 gesetzt\n* Einheiten wurden hinzugefügt wenn verfügbar.\n* Übersetzungen wurden für alle unterstützten Sprachen hinzugefügt\n* Abhängigkeiten wurden aktualisiert",
