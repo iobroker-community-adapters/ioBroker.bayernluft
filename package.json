@@ -2,16 +2,10 @@
   "name": "iobroker.bayernluft",
   "version": "3.1.0",
   "description": "Connects BayernLuft into IoBroker",
-  "author": {
-    "name": "Marco15453",
-    "email": "support@marco15453.xyz"
-  },
+  "author": "Marco15453 <support@marco15453.xyz>",
   "contributors": [
     "mcm1957 <mcm57@gmx.at>",
-    {
-      "name": "iobroker-community-adapters",
-      "email": "iobroker-community-adapters@gmx.de"
-    }
+    "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.bayernluft",
   "license": "MIT",
