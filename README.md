@@ -39,6 +39,9 @@ Also a big thanks to the company Bayernluft for their great support
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (mcm1957) Dependencies have been updated
+
 ### 3.1.0 (2025-09-07)
 * (mcm1957) Adapter requires Admin >= 7.6.17, js-controller >= 6.0.11 and node.js >= 20 now.
 * (mcm1957) Dependencies have been updated
