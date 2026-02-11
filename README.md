@@ -39,7 +39,7 @@ Also a big thanks to the company Bayernluft for their great support
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.1.1 (2026-02-11)
 * (mcm1957) Dependencies have been updated
 
 ### 3.1.0 (2025-09-07)
