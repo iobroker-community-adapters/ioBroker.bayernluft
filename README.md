@@ -39,6 +39,10 @@ Also a big thanks to the company Bayernluft for their great support
 	Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+- (copilot) Adapter requires admin >= 7.7.22 now
+
 ### 3.1.1 (2026-02-11)
 * (mcm1957) Dependencies have been updated
 
